@@ -10,7 +10,8 @@ class ModelOutput(
 expect class TorchModule(path: PathComponent) {
     fun inference(
         inputIds: LongArray,
-        typeIds: LongArray,
         shape: LongArray
     ): ModelOutput
+
+    fun destroy()
 }
