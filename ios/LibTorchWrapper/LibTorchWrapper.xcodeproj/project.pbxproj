@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		3847982B27FDA16900E4E801 /* LibTorchWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847982A27FDA16900E4E801 /* LibTorchWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3847983527FDA24E00E4E801 /* TorchModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3847983427FDA24E00E4E801 /* TorchModule.mm */; };
-		3847983627FDA47C00E4E801 /* TorchModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847983327FDA23E00E4E801 /* TorchModule.h */; };
-		3847983727FDA47F00E4E801 /* ModelOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847983227FDA21900E4E801 /* ModelOutput.h */; };
+		3847983627FDA47C00E4E801 /* TorchModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847983327FDA23E00E4E801 /* TorchModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3847983727FDA47F00E4E801 /* ModelOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847983227FDA21900E4E801 /* ModelOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3847983827FDA48100E4E801 /* ModelOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3847983127FDA20200E4E801 /* ModelOutput.m */; };
 		3847987427FDAB4700E4E801 /* Pods_LibTorchWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B89995C3343293DA6F21CC1 /* Pods_LibTorchWrapper.framework */; };
 		3847987527FDAB4700E4E801 /* Pods_LibTorchWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6B89995C3343293DA6F21CC1 /* Pods_LibTorchWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };

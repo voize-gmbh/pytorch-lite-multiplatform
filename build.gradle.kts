@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.6.10"
+    kotlin("multiplatform") version "1.6.20"
     id("com.android.application")
 }
 
@@ -12,6 +12,7 @@ repositories {
 }
 
 kotlin {
+    /*
     ios {
         binaries {
             framework {
@@ -19,9 +20,40 @@ kotlin {
             }
         }
     }
+
+     */
+
+    iosArm64 {
+        val frameworkPath = "/Users/voize/Library/Developer/Xcode/DerivedData/LibTorchWrapper-frrwmpkqiqjnafefetsiauquiyhs/Build/Products/Debug-iphoneos"
+
+        compilations.getByName("main") {
+            val LibTorchWrapper by cinterops.creating {
+                // Path to .def file
+                defFile("src/nativeInterop/cinterop/LibTorchWrapper.def")
+
+                compilerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
+            }
+        }
+
+        binaries {
+            framework {
+                embedBitcode("disable")
+            }
+        }
+
+        binaries.all {
+            // Tell the linker where the framework is located.
+            linkerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
+        }
+    }
+
     android()
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("com.suparnatural.kotlin:fs:1.1.0")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -30,6 +62,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 rootProject
+                implementation("org.pytorch:pytorch_android_lite:1.11")
             }
         }
         val androidTest by getting {
@@ -37,8 +70,6 @@ kotlin {
                 implementation("junit:junit:4.13")
             }
         }
-        val iosMain by getting
-        val iosTest by getting
     }
 }
 
@@ -46,7 +77,7 @@ android {
     compileSdkVersion(29)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        applicationId = "de.voize.pytorch-lite-multiplatform"
+        applicationId = "de.voize.pytorch_lite_multiplatform"
         minSdkVersion(24)
         targetSdkVersion(29)
     }
@@ -55,3 +86,4 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
