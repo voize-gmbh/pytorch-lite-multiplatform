@@ -1,12 +1,11 @@
 package de.voize.pytorch_lite_multiplatform
 
-import com.suparnatural.core.fs.PathComponent
 import org.pytorch.IValue
 import org.pytorch.LiteModuleLoader
 import org.pytorch.Tensor
 
-actual class TorchModule actual constructor(path: PathComponent) {
-    private val module = LiteModuleLoader.load(path.toString())
+actual class TorchModule actual constructor(path: String) {
+    private val module = LiteModuleLoader.load(path)
 
     actual fun inference(
         inputIds: LongArray,
