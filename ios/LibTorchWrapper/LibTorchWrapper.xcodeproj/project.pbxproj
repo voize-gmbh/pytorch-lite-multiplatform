@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		383109D62809C92300E094E4 /* Tensor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 383109D52809C92300E094E4 /* Tensor.mm */; };
+		383109D82809CC2200E094E4 /* Tensor.h in Headers */ = {isa = PBXBuildFile; fileRef = 383109D72809C9CF00E094E4 /* Tensor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3847982B27FDA16900E4E801 /* LibTorchWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847982A27FDA16900E4E801 /* LibTorchWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3847983527FDA24E00E4E801 /* TorchModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3847983427FDA24E00E4E801 /* TorchModule.mm */; };
 		3847983627FDA47C00E4E801 /* TorchModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3847983327FDA23E00E4E801 /* TorchModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -32,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		301210CF02902776B50A305E /* Pods-LibTorchWrapper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LibTorchWrapper.release.xcconfig"; path = "Target Support Files/Pods-LibTorchWrapper/Pods-LibTorchWrapper.release.xcconfig"; sourceTree = "<group>"; };
+		383109D52809C92300E094E4 /* Tensor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Tensor.mm; sourceTree = "<group>"; };
+		383109D72809C9CF00E094E4 /* Tensor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tensor.h; sourceTree = "<group>"; };
 		3847982727FDA16900E4E801 /* LibTorchWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LibTorchWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3847982A27FDA16900E4E801 /* LibTorchWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibTorchWrapper.h; sourceTree = "<group>"; };
 		3847983127FDA20200E4E801 /* ModelOutput.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; path = ModelOutput.m; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 				3847983227FDA21900E4E801 /* ModelOutput.h */,
 				3847983327FDA23E00E4E801 /* TorchModule.h */,
 				3847983427FDA24E00E4E801 /* TorchModule.mm */,
+				383109D52809C92300E094E4 /* Tensor.mm */,
+				383109D72809C9CF00E094E4 /* Tensor.h */,
 			);
 			path = LibTorchWrapper;
 			sourceTree = "<group>";
@@ -109,6 +115,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3847983727FDA47F00E4E801 /* ModelOutput.h in Headers */,
+				383109D82809CC2200E094E4 /* Tensor.h in Headers */,
 				3847982B27FDA16900E4E801 /* LibTorchWrapper.h in Headers */,
 				3847983627FDA47C00E4E801 /* TorchModule.h in Headers */,
 			);
@@ -211,6 +218,7 @@
 			files = (
 				3847983827FDA48100E4E801 /* ModelOutput.m in Sources */,
 				3847983527FDA24E00E4E801 /* TorchModule.mm in Sources */,
+				383109D62809C92300E094E4 /* Tensor.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,7 +229,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -285,7 +292,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

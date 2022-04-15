@@ -6,10 +6,7 @@ class ModelOutput(
 )
 
 expect class TorchModule(path: String) {
-    fun inference(
-        data: FloatArray,
-        shape: LongArray
-    ): ModelOutput
+    fun forward(inputs: List<Tensor>): ModelOutput
 
     fun destroy()
 }
