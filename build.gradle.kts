@@ -131,6 +131,20 @@ task("buildLibTorchWrapperXCFramework") {
             "-output", "build/LibTorchWrapper.xcframework"
         )
     }
+
+    exec {
+        commandLine(
+            "mkdir", "-p", "build/bin/iosX64/debugTest/Frameworks"
+        )
+    }
+
+    exec {
+        commandLine(
+            "cp", "-r",
+            "ios/LibTorchWrapper/build/LibTorchWrapper.xcframework/ios-x86_64-simulator/LibTorchWrapper.framework",
+            "build/bin/iosX64/debugTest/Frameworks/LibTorchWrapper.framework"
+        )
+    }
 }
 
 // inspired by: https://diamantidis.github.io/2019/08/25/kotlin-multiplatform-project-unit-tests-for-ios-and-android

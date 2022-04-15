@@ -1,5 +1,6 @@
 #import "TorchModule.h"
 #import "ModelOutput.h"
+#import "Tensor.h"
 #import <LibTorch-Lite/LibTorch-Lite.h>
 
 struct TensorContainer {
@@ -17,7 +18,6 @@ struct TensorContainer {
         try {
             _impl = torch::jit::_load_for_mobile(filePath.UTF8String);
             torch::autograd::AutoGradMode guard(false);
-            at::AutoNonVariableTypeMode non_var_type_mode(true);
         } catch (const std::exception& exception) {
             NSLog(@"%s", exception.what());
             return nil;
@@ -26,54 +26,14 @@ struct TensorContainer {
     return self;
 }
 
-- (nullable ModelOutput*)inferenceInputA:(float*)inputA
-                           inputAShape:(long long*)inputAShape
-                     inputAShapeLength:(size_t)inputAShapeLength
-                                inputB:(float*)inputB
-                           inputBShape:(long long*)inputBShape
-                     inputBShapeLength:(size_t)inputBShapeLength {
+- (nullable ModelOutput*)forward:(NSArray<Tensor*>*)inputs
+                       numInputs:(size_t)numInputs {
     try {
-        at::IntArrayRef shapeA = at::ArrayRef<int64_t>((int64_t*)inputAShape, inputAShapeLength);
-        at::IntArrayRef shapeB = at::ArrayRef<int64_t>((int64_t*)inputBShape, inputBShapeLength);
-        
-        at::Tensor tensorA = torch::from_blob(inputA, shapeA, at::kFloat);
-        at::Tensor tensorB = torch::from_blob(inputB, shapeB, at::kFloat);
-        
-        auto outputTensor = _impl.forward({tensorA, tensorB}).toTensor();
-        TensorContainer container = { .tensor = outputTensor };
-        return [self processOutputTensor:(&container)];
-    } catch (const std::exception& exception) {
-        NSLog(@"%s", exception.what());
-    }
-    
-    return nil;
-}
-
-- (nullable ModelOutput*)inferenceLongInput:(long*)input
-                               inputShape:(long long*)inputShape
-                         inputShapeLength:(size_t)inputShapeLength {
-    try {
-        at::IntArrayRef inShape = at::ArrayRef<int64_t>((int64_t*)inputShape, inputShapeLength);
-        at::Tensor tensor = torch::from_blob(input, inShape, at::kLong);
-        
-        auto outputTensor = _impl.forward({tensor}).toTensor();
-        TensorContainer container = { .tensor = outputTensor };
-        return [self processOutputTensor:(&container)];
-    } catch (const std::exception& exception) {
-        NSLog(@"%s", exception.what());
-    }
-    
-    return nil;
-}
-
-- (nullable ModelOutput*)inferenceFloatInput:(float*)input
-                                inputShape:(long long*)inputShape
-                          inputShapeLength:(size_t)inputShapeLength {
-    try {
-        at::IntArrayRef inShape = at::ArrayRef<int64_t>((int64_t*)inputShape, inputShapeLength);
-        at::Tensor inTensor = torch::from_blob(input, inShape, at::kFloat);
-        
-        auto outputTensor = _impl.forward({inTensor}).toTensor();
+        std::vector<at::IValue> iValues;
+        for (Tensor* tensor in inputs) {
+            iValues.push_back(at::IValue(*((at::Tensor*)(tensor.getTensor))));
+        }
+        at::Tensor outputTensor = _impl.forward(iValues).toTensor();
         TensorContainer container = { .tensor = outputTensor };
         return [self processOutputTensor:(&container)];
     } catch (const std::exception& exception) {
