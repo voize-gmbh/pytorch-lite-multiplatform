@@ -2,8 +2,9 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     kotlin("multiplatform") version "1.6.20"
-    id("com.android.application")
+    id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
+    id("maven-publish")
 }
 
 group = "de.voize"
@@ -15,7 +16,13 @@ repositories {
 }
 
 kotlin {
+    android {
+        publishLibraryVariants("debug", "release")
+    }
+
     val frameworkBasePath = "/Users/voize/voize/pytorch-lite-multiplatform/ios/LibTorchWrapper/build/LibTorchWrapper.xcframework"
+
+    ios()
 
     iosArm64 {
         val frameworkPath = "$frameworkBasePath/ios-arm64"
@@ -58,8 +65,6 @@ kotlin {
             linkerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
         }
     }
-
-    android()
 
     sourceSets {
         val commonMain by getting {
@@ -150,9 +155,16 @@ android {
     compileSdkVersion(29)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        applicationId = "de.voize.pytorch_lite_multiplatform"
         minSdkVersion(24)
         targetSdkVersion(29)
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

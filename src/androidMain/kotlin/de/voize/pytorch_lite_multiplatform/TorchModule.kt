@@ -8,10 +8,10 @@ actual class TorchModule actual constructor(path: String) {
     private val module = LiteModuleLoader.load(path)
 
     actual fun inference(
-        inputIds: LongArray,
+        data: FloatArray,
         shape: LongArray
     ): ModelOutput {
-        val inputIdsTensor = Tensor.fromBlob(inputIds, shape)
+        val inputIdsTensor = Tensor.fromBlob(data, shape)
         val outputTensor = module.forward(IValue.from(inputIdsTensor)).toTensor()
         return ModelOutput(outputTensor.dataAsFloatArray, outputTensor.shape())
     }

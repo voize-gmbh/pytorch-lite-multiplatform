@@ -1,23 +1,20 @@
 package de.voize.pytorch_lite_multiplatform
 
-import kotlinx.cinterop.LongVar
-import kotlinx.cinterop.allocArray
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.set
+import kotlinx.cinterop.*
 
 actual class TorchModule actual constructor(path: String) {
     private val module = LibTorchWrapper.TorchModule(fileAtPath = path)
 
     actual fun inference(
-        inputIds: LongArray,
+        data: FloatArray,
         shape: LongArray
     ): ModelOutput {
         memScoped {
-            val cInputIds = allocArray<LongVar>(inputIds.size)
+            val cData = allocArray<FloatVar>(data.size)
             val cShape = allocArray<LongVar>(shape.size)
-            inputIds.forEachIndexed { index, value -> cInputIds[index] = value }
+            data.forEachIndexed { index, value -> cData[index] = value }
             shape.forEachIndexed { index, value -> cShape[index] = value }
-            val output = module.inferenceLongInput(cInputIds, cShape, shape.size.toULong())
+            val output = module.inferenceFloatInput(cData, cShape, shape.size.toULong())
 
             return output?.let {
                 ModelOutput(

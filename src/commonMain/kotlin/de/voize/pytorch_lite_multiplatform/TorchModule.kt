@@ -7,7 +7,7 @@ class ModelOutput(
 
 expect class TorchModule(path: String) {
     fun inference(
-        inputIds: LongArray,
+        data: FloatArray,
         shape: LongArray
     ): ModelOutput
 
