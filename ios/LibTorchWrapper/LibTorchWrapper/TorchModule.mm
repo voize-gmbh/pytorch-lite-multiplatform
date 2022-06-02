@@ -26,8 +26,7 @@ struct TensorContainer {
     return self;
 }
 
-- (nullable ModelOutput*)forward:(NSArray<Tensor*>*)inputs
-                       numInputs:(size_t)numInputs {
+- (nullable ModelOutput*)forward:(NSArray<Tensor*>*)inputs {
     try {
         std::vector<at::IValue> iValues;
         for (Tensor* tensor in inputs) {
@@ -40,6 +39,26 @@ struct TensorContainer {
         NSLog(@"%s", exception.what());
     }
     
+    return nil;
+}
+
+- (nullable ModelOutput*)forwardMap:(NSDictionary<NSString*, Tensor*>*)inputs {
+    try {
+        at::IValue iValue;
+        c10::impl::GenericDict inputDict{c10::StringType::get(), iValue.type()};
+
+        for(NSString* key in inputs) {
+            at::Tensor* tensor = (at::Tensor*)[inputs objectForKey:key].getTensor;
+            inputDict.insert(key, at::IValue(*tensor));
+        }
+
+        at::Tensor outputTensor = _impl.forward({inputDict}).toTensor();
+        TensorContainer container = { .tensor = outputTensor };
+        return [self processOutputTensor:(&container)];
+    } catch (const std::exception& exception) {
+        NSLog(@"%s", exception.what());
+    }
+
     return nil;
 }
 
