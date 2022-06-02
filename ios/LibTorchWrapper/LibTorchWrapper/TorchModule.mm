@@ -44,12 +44,12 @@ struct TensorContainer {
 
 - (nullable ModelOutput*)forwardMap:(NSDictionary<NSString*, Tensor*>*)inputs {
     try {
-        at::IValue iValue;
+        at::IValue iValue{torch::rand({1})};
         c10::impl::GenericDict inputDict{c10::StringType::get(), iValue.type()};
 
-        for(NSString* key in inputs) {
+        for (NSString* key in inputs) {
             at::Tensor* tensor = (at::Tensor*)[inputs objectForKey:key].getTensor;
-            inputDict.insert(key, at::IValue(*tensor));
+            inputDict.insert(key.UTF8String, at::IValue(*tensor));
         }
 
         at::Tensor outputTensor = _impl.forward({inputDict}).toTensor();
