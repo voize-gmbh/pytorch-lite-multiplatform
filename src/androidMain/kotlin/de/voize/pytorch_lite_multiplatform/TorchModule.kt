@@ -12,6 +12,12 @@ actual class TorchModule actual constructor(path: String) {
         return ModelOutput(outputTensor.dataAsFloatArray, outputTensor.shape())
     }
 
+    actual fun forward(inputs: Map<String, Tensor>): ModelOutput {
+        val iValue = IValue.dictStringKeyFrom(inputs.mapValues { IValue.from(it.value.getTensor()) })
+        val outputTensor = module.forward(iValue).toTensor()
+        return ModelOutput(outputTensor.dataAsFloatArray, outputTensor.shape())
+    }
+
     actual fun destroy() {
         module.destroy()
     }

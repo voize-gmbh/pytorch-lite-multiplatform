@@ -8,5 +8,7 @@ class ModelOutput(
 expect class TorchModule(path: String) {
     fun forward(inputs: List<Tensor>): ModelOutput
 
+    fun forward(inputs: Map<String, Tensor>): ModelOutput
+
     fun destroy()
 }
