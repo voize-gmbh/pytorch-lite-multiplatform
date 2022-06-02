@@ -1,9 +1,10 @@
 package de.voize.pytorch_lite_multiplatform
 
 import kotlinx.cinterop.*
+import cocoapods.LibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
 actual class TorchModule actual constructor(path: String) {
-    private val module = LibTorchWrapper.TorchModule(fileAtPath = path)
+    private val module = LibTorchWrapperTorchModule(fileAtPath = path)
 
     actual fun runMethod(methodName: String, inputs: List<Tensor>): ModelOutput {
         return memScoped {

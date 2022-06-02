@@ -4,3 +4,5 @@ venv
 local.properties
 .DS_Store
 build
+ios/LibTorchWrapper/LibTorchWrapper.xcworkspace/xcuserdata
+pytorch_lite_multiplatform.podspec

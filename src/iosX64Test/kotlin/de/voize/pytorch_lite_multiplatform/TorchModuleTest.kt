@@ -1,7 +1,7 @@
 package de.voize.pytorch_lite_multiplatform
 
 import com.suparnatural.core.fs.FileSystem
-import kotlinx.cinterop.*
+import cocoapods.LibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 import kotlin.test.*
 
 class TorchModuleTest {
@@ -10,7 +10,7 @@ class TorchModuleTest {
 
     @Test
     fun itCanLoadRawLibTorchModule() {
-        val module = LibTorchWrapper.TorchModule(fileAtPath = localModulePath)
+        val module = LibTorchWrapperTorchModule(fileAtPath = localModulePath)
         assertNotNull(module)
     }
 

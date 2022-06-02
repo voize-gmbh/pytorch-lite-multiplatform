@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin("multiplatform") version "1.6.20"
+    kotlin("multiplatform") version "1.6.21"
+    kotlin("native.cocoapods") version "1.6.21"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("maven-publish")
@@ -20,50 +21,20 @@ kotlin {
         publishLibraryVariants("debug", "release")
     }
 
-    val frameworkBasePath = "/Users/voize/voize/pytorch-lite-multiplatform/ios/LibTorchWrapper/build/LibTorchWrapper.xcframework"
-
     ios()
 
-    iosArm64 {
-        val frameworkPath = "$frameworkBasePath/ios-arm64"
+    cocoapods {
+        ios.deploymentTarget = "13.5"
 
-        compilations.getByName("main") {
-            val LibTorchWrapper by cinterops.creating {
-                defFile("src/nativeInterop/cinterop/LibTorchWrapper.def")
-                compilerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
-            }
+        homepage = "voize.de"
+        summary = "test"
+
+        pod("LibTorchWrapper") {
+            version = "0.1.0"
+            source = path(project.file("ios/LibTorchWrapper"))
         }
 
-        binaries {
-            framework {
-                embedBitcode("disable")
-            }
-        }
-
-        binaries.all {
-            linkerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
-        }
-    }
-
-    iosX64 {
-        val frameworkPath = "$frameworkBasePath/ios-x86_64-simulator"
-
-        compilations.getByName("main") {
-            val LibTorchWrapper by cinterops.creating {
-                defFile("src/nativeInterop/cinterop/LibTorchWrapper.def")
-                compilerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
-            }
-        }
-
-        binaries {
-            framework {
-                embedBitcode("disable")
-            }
-        }
-
-        binaries.all {
-            linkerOpts("-framework", "LibTorchWrapper", "-F${frameworkPath}")
-        }
+        useLibraries()
     }
 
     sourceSets {
@@ -91,59 +62,12 @@ kotlin {
     }
 }
 
-task("buildLibTorchWrapperXCFramework") {
-    exec {
-        workingDir("ios/LibTorchWrapper")
-        commandLine("rm", "-rf", "build")
-    }
-
-    exec {
-        workingDir("ios/LibTorchWrapper")
-        commandLine(
-            "xcodebuild", "archive",
-            "-workspace", "LibTorchWrapper.xcworkspace",
-            "-scheme", "LibTorchWrapper",
-            "-archivePath", "build/LibTorchWrapper-iphoneos.xcarchive",
-            "-sdk", "iphoneos",
-            "SKIP_INSTALL=NO"
-        )
-    }
-
-    exec {
-        workingDir("ios/LibTorchWrapper")
-        commandLine(
-            "xcodebuild", "archive",
-            "-workspace", "LibTorchWrapper.xcworkspace",
-            "-scheme", "LibTorchWrapper",
-            "-archivePath", "build/LibTorchWrapper-iphonesimulator.xcarchive",
-            "-sdk", "iphonesimulator",
-            "VALID_ARCHS=\"x86_64\"",
-            "SKIP_INSTALL=NO"
-        )
-    }
-
-    exec {
-        workingDir("ios/LibTorchWrapper")
-        commandLine(
-            "xcodebuild", "-create-xcframework",
-            "-framework", "build/LibTorchWrapper-iphonesimulator.xcarchive/Products/Library/Frameworks/LibTorchWrapper.framework",
-            "-framework", "build/LibTorchWrapper-iphoneos.xcarchive/Products/Library/Frameworks/LibTorchWrapper.framework",
-            "-output", "build/LibTorchWrapper.xcframework"
-        )
-    }
-
-    exec {
-        commandLine(
-            "mkdir", "-p", "build/bin/iosX64/debugTest/Frameworks"
-        )
-    }
-
-    exec {
-        commandLine(
-            "cp", "-r",
-            "ios/LibTorchWrapper/build/LibTorchWrapper.xcframework/ios-x86_64-simulator/LibTorchWrapper.framework",
-            "build/bin/iosX64/debugTest/Frameworks/LibTorchWrapper.framework"
-        )
+tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefLibTorchWrapper").configure {
+    doLast {
+        outputFile.writeText("""
+            language = Objective-C
+            headers = LibTorchWrapper.h
+        """.trimIndent())
     }
 }
 
