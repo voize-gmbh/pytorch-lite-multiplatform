@@ -26,13 +26,16 @@ struct TensorContainer {
     return self;
 }
 
-- (nullable ModelOutput*)forward:(NSArray<Tensor*>*)inputs {
+- (nullable ModelOutput*)runMethod:(NSString*)methodName
+                            inputs:(NSArray<Tensor*>*)inputs {
     try {
         std::vector<at::IValue> iValues;
         for (Tensor* tensor in inputs) {
             iValues.push_back(at::IValue(*((at::Tensor*)(tensor.getTensor))));
         }
-        at::Tensor outputTensor = _impl.forward(iValues).toTensor();
+
+        at::Tensor outputTensor = _impl.get_method(std::string(methodName.UTF8String))(std::move(iValues)).toTensor();
+
         TensorContainer container = { .tensor = outputTensor };
         return [self processOutputTensor:(&container)];
     } catch (const std::exception& exception) {
@@ -42,7 +45,8 @@ struct TensorContainer {
     return nil;
 }
 
-- (nullable ModelOutput*)forwardMap:(NSDictionary<NSString*, Tensor*>*)inputs {
+- (nullable ModelOutput*)runMethodMap:(NSString*)methodName
+                               inputs:(NSDictionary<NSString*, Tensor*>*)inputs {
     try {
         at::IValue iValue{torch::rand({1})};
         c10::impl::GenericDict inputDict{c10::StringType::get(), iValue.type()};
@@ -52,7 +56,7 @@ struct TensorContainer {
             inputDict.insert(key.UTF8String, at::IValue(*tensor));
         }
 
-        at::Tensor outputTensor = _impl.forward({inputDict}).toTensor();
+        at::Tensor outputTensor = _impl.run_method(std::string(methodName.UTF8String), inputDict).toTensor();
         TensorContainer container = { .tensor = outputTensor };
         return [self processOutputTensor:(&container)];
     } catch (const std::exception& exception) {

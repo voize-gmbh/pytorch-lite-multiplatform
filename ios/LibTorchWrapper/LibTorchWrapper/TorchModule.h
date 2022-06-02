@@ -15,9 +15,11 @@ struct TensorContainer;
 - (instancetype)init NS_UNAVAILABLE;
 
 
-- (nullable ModelOutput*)forward:(NSArray<Tensor*>*)inputs;
+- (nullable ModelOutput*)runMethod:(NSString*)methodName
+                                inputs:(NSArray<Tensor*>*)inputs;
 
-- (nullable ModelOutput*)forwardMap:(NSDictionary<NSString*, Tensor*>*)inputs;
+- (nullable ModelOutput*)runMethodMap:(NSString*)methodName
+                                inputs:(NSDictionary<NSString*, Tensor*>*)inputs;
 
 - (ModelOutput*)processOutputTensor:(struct TensorContainer*)tensor;
 

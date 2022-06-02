@@ -5,9 +5,9 @@ import kotlinx.cinterop.*
 actual class TorchModule actual constructor(path: String) {
     private val module = LibTorchWrapper.TorchModule(fileAtPath = path)
 
-    actual fun forward(inputs: List<Tensor>): ModelOutput {
+    actual fun runMethod(methodName: String, inputs: List<Tensor>): ModelOutput {
         return memScoped {
-            val output = module.forward(inputs.map { it.getTensor() })
+            val output = module.runMethod(methodName, inputs.map { it.getTensor() })
 
             output?.let {
                 ModelOutput(
@@ -18,9 +18,9 @@ actual class TorchModule actual constructor(path: String) {
         }
     }
 
-    actual fun forward(inputs: Map<String, Tensor>): ModelOutput {
+    actual fun runMethod(methodName: String, inputs: Map<String, Tensor>): ModelOutput {
         return memScoped {
-            val output = module.forwardMap(inputs.mapValues { it.value.getTensor() })
+            val output = module.runMethodMap(methodName, inputs.mapValues { it.value.getTensor() })
 
             output?.let {
                 ModelOutput(
@@ -29,6 +29,14 @@ actual class TorchModule actual constructor(path: String) {
                 )
             } ?: throw IllegalArgumentException("Model output can not be null")
         }
+    }
+
+    actual fun forward(inputs: List<Tensor>): ModelOutput {
+        return runMethod("forward", inputs)
+    }
+
+    actual fun forward(inputs: Map<String, Tensor>): ModelOutput {
+        return runMethod("forward", inputs)
     }
 
     actual fun destroy() {
