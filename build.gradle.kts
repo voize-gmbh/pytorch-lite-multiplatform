@@ -109,3 +109,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
+publishing {
+    repositories {
+        if (
+            System.getenv("GITLAB_REGISTRY_URL") != null &&
+            System.getenv("GITLAB_REGISTRY_TOKEN") != null
+        ) {
+            maven {
+                url = uri(System.getenv("GITLAB_REGISTRY_URL"))
+                name = "GitLab"
+                credentials(HttpHeaderCredentials::class) {
+                    name = "Deploy-Token"
+                    value = System.getenv("GITLAB_REGISTRY_DEPLOY_TOKEN")
+                }
+                authentication {
+                    create<HttpHeaderAuthentication>("header")
+                }
+            }
+        }
+    }
+}
