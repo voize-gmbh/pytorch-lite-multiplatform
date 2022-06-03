@@ -26,12 +26,12 @@ kotlin {
     cocoapods {
         ios.deploymentTarget = "13.5"
 
-        homepage = "voize.de"
-        summary = "test"
+        homepage = "https://github.com/voize-gmbh/pytorch-lite-multiplatform"
+        summary = "Kotlin Multiplatform wrapper for PyTorch Lite"
 
         pod("LibTorchWrapper") {
             version = "0.1.0"
-            source = path(project.file("ios/LibTorchWrapper"))
+            source = path(project.file("ios/LibTorchWrapper-local"))
         }
 
         useLibraries()
