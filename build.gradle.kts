@@ -109,3 +109,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/22316489/packages/maven")
+            name = "GitLab"
+            credentials(HttpHeaderCredentials::class) {
+                if (System.getenv("CI") != null) {
+                    name = "Job-Token"
+                    value = System.getenv("CI_JOB_TOKEN")
+                } else {
+                    name = "Private-Token"
+                    value = project.properties.getOrDefault("gitLabPrivateToken", "") as String
+                }
+            }
+            authentication {
+                create<HttpHeaderAuthentication>("header")
+            }
+        }
+    }
+}
