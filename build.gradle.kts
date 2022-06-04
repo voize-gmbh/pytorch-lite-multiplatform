@@ -21,7 +21,16 @@ kotlin {
         publishLibraryVariants("debug", "release")
     }
 
-    ios()
+    ios {
+        val torchLibsDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Pods/LibTorch-Lite/install/lib")
+
+        binaries.all {
+            linkerOpts(
+                "-L$torchLibsDir",
+                "-lc10", "-ltorch", "-ltorch_cpu"
+            )
+        }
+    }
 
     cocoapods {
         ios.deploymentTarget = "13.5"
@@ -68,6 +77,14 @@ tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefLibTorchW
             language = Objective-C
             headers = LibTorchWrapper.h
         """.trimIndent())
+    }
+}
+
+tasks.named("linkDebugTestIosX64").configure {
+    doFirst {
+        val path = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/LibTorchWrapper")
+        path.resolve("LibTorchWrapper.framework").mkdir()
+        path.resolve("libLibTorchWrapper.a").copyTo(path.resolve("LibTorchWrapper.framework/LibTorchWrapper"))
     }
 }
 
