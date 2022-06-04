@@ -11,5 +11,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install cocoapods-generate
+        run: gem install cocoapods-generate
       - name: Gradle Build
         run: ./gradlew build
