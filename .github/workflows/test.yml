@@ -1,0 +1,9 @@
+name: Build and lint project
+on: [push, pull_request]
+jobs:
+  lint-release-podspec:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint release podspec
+        run: pod spec lint LibTorchWrapper.podspec --use-libraries --allow-warnings

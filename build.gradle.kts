@@ -31,7 +31,7 @@ kotlin {
 
         pod("LibTorchWrapper") {
             version = "0.1.0"
-            source = path(project.file("ios/LibTorchWrapper-local"))
+            source = path(project.file("ios/LibTorchWrapper"))
         }
 
         useLibraries()
