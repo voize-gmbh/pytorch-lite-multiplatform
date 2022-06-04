@@ -22,7 +22,7 @@ kotlin {
     }
 
     ios {
-        val torchLibsDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Pods/LibTorch-Lite/install/lib")
+        val torchLibsDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/Pods/LibTorch-Lite/install/lib")
 
         binaries.all {
             linkerOpts(
@@ -82,9 +82,11 @@ tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefLibTorchW
 
 tasks.named("linkDebugTestIosX64").configure {
     doFirst {
-        val path = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/LibTorchWrapper")
-        path.resolve("LibTorchWrapper.framework").mkdir()
-        path.resolve("libLibTorchWrapper.a").copyTo(path.resolve("LibTorchWrapper.framework/LibTorchWrapper"))
+        val basePath = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/LibTorchWrapper")
+        val frameworkPath = basePath.resolve("LibTorchWrapper.framework")
+        frameworkPath.mkdir()
+        val frameworkLibPath = frameworkPath.resolve("LibTorchWrapper")
+        basePath.resolve("libLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
     }
 }
 
