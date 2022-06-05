@@ -4,7 +4,7 @@ import com.suparnatural.core.fs.FileSystem
 import cocoapods.LibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 import kotlin.test.*
 
-class TorchModuleTest {
+class TorchModuleIOSTest {
     private val contentsDir = FileSystem.contentsDirectory.absolutePath
     private val localModulePath = contentsDir?.byAppending("dummy_module.ptl")?.component!!
 
