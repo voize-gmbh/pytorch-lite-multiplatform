@@ -22,12 +22,17 @@ kotlin {
     }
 
     ios {
-        val torchLibsDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/Pods/LibTorch-Lite/install/lib")
+        val libTorchPodDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/Pods/LibTorch-Lite")
+        val libTorchLibsDir = libTorchPodDir.resolve("install/lib")
 
         binaries.all {
             linkerOpts(
-                "-L$torchLibsDir",
-                "-lc10", "-ltorch", "-ltorch_cpu"
+                "-L${libTorchLibsDir.absolutePath}",
+                "-lc10", "-ltorch", "-ltorch_cpu", "-lXNNPACK",
+                "-lclog", "-lcpuinfo", "-leigen_blas", "-lpthreadpool", "-lpytorch_qnnpack",
+                "-force_load", libTorchLibsDir.resolve("libtorch.a").absolutePath,
+                "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
+                "-all_load"
             )
         }
     }
