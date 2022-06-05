@@ -103,7 +103,7 @@ task("iosSimulatorX64Test") {
         val binary = target.binaries.getTest("DEBUG").outputFile
         println(binary)
         exec {
-            commandLine("xcrun", "simctl", "spawn", device, binary.absolutePath)
+            commandLine("xcrun", "simctl", "spawn", "--standalone", device, binary.absolutePath)
         }
     }
 }
