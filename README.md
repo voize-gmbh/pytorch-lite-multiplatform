@@ -39,11 +39,19 @@ val inputTensor = FloatTensor(
 Now you can run inference either via `module.forward` or `module.runMethod`.
 
 ```kotlin
-val output = module.forward(inputTensor)
+val output = module.forward(listOf(inputTensor))
 ```
 
 ```kotlin
-val output = module.runMethod("mymethod", inputTensor)
+val output = module.runMethod("mymethod", listOf(inputTensor))
+```
+
+The list of given input tensors will be flattened to your module's method arguments.
+
+If your inference method requires a dictionary as input you can use
+
+```kotlin
+val output = module.forward(mapOf("x" to inputTensor))
 ```
 
 The return type of your inference is `ModelOutput` which contains the flat `data` (`FloatArray`) and `shape` (`LongArray`) property.
