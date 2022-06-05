@@ -10,21 +10,45 @@ class TorchModuleIOSTest {
 
     @Test
     fun itCanLoadRawLibTorchModule() {
+        println(localModulePath)
         val module = LibTorchWrapperTorchModule(fileAtPath = localModulePath)
         assertNotNull(module)
     }
 
     @Test
-    fun itCanRunInference() {
+    fun itCanRunMethod() {
         val module = TorchModule(localModulePath)
-
-        val tensor = FloatTensor(
+        val output = module.runMethod("inference", listOf(FloatTensor(
             FloatArray(10) { 0.0F },
             longArrayOf(1, 10),
+        )))
+        assertEquals(10, output.data.size)
+        assertContentEquals(longArrayOf(1, 10), output.shape)
+    }
+
+    @Test
+    fun itCanRunMethodWithDictInput() {
+        val module = TorchModule(localModulePath)
+        val output = module.runMethod(
+            "inference_dict",
+            mapOf(
+                "x" to FloatTensor(
+                    FloatArray(10) { 0.0F },
+                    longArrayOf(1, 10),
+                )
+            )
         )
+        assertEquals(10, output.data.size)
+        assertContentEquals(longArrayOf(1, 10), output.shape)
+    }
 
-        val output = module.forward(listOf(tensor))
-
+    @Test
+    fun itCanRunForward() {
+        val module = TorchModule(localModulePath)
+        val output = module.forward(listOf(FloatTensor(
+            FloatArray(10) { 0.0F },
+            longArrayOf(1, 10),
+        )))
         assertEquals(10, output.data.size)
         assertContentEquals(longArrayOf(1, 10), output.shape)
     }
