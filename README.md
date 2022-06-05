@@ -25,13 +25,6 @@ val module = TorchModule(path = "<path/to/model.ptl>")
 
 Once you initialized the model you are ready to run inference.
 
-**Current inference limitations:**
-
-- only the `forward` method is supported, `runMethod` is not yet supported
-- all inputs of your `forward` method have to be plain tensors, no Python dictionaries, scalars, boolean flags etc.
-- only float and long tensors are supported
-- the return type of your model's `forward` must be a plain tensor of data type float
-
 To setup the input tensors for your model use the `FloatTensor` and `LongTensor` classes.
 
 ```kotlin
@@ -41,9 +34,22 @@ val inputTensor = FloatTensor(
     data = floatArrayOf(...),
     shape = longArrayOf(...),
 )
-val output = module.forward(listOf(inputTensor))
+```
 
-// process output.data with shape output.shape
+Now you can run inference either via `module.forward` or `module.runMethod`.
+
+```kotlin
+val output = module.forward(inputTensor)
+```
+
+```kotlin
+val output = module.runMethod("mymethod", inputTensor)
 ```
 
 The return type of your inference is `ModelOutput` which contains the flat `data` (`FloatArray`) and `shape` (`LongArray`) property.
+
+### Current inference limitations
+
+- the input to your inference method can either be a list of plain tensors (is flatted to arguments) or dictionary with string keys and tensor values
+- only float and long tensors are supported
+- the return type of your model's `forward` must be a plain tensor of data type float
