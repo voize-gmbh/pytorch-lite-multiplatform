@@ -5,8 +5,15 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Lint release podspec
-        run: pod spec lint LibTorchWrapper.podspec --use-libraries --allow-warnings
+      - run: |
+          echo "#!/bin/bash" > .git-credentials
+          echo "echo username=$PODSPEC_SOURCE_GIT_USERNAME" >> .git-credentials
+          echo "echo password=$PODSPEC_SOURCE_GIT_PASSWORD" >> .git-credentials
+        env:
+          PODSPEC_SOURCE_GIT_USERNAME: ${{ secrets.PODSPEC_SOURCE_GIT_USERNAME }}
+          PODSPEC_SOURCE_GIT_PASSWORD: ${{ secrets.PODSPEC_SOURCE_GIT_PASSWORD }}
+      - run: git config --global credential.helper "/bin/bash .git-credentials"
+      - run: pod spec lint LibTorchWrapper.podspec --use-libraries --allow-warnings
   build:
     runs-on: macos-latest
     steps:
