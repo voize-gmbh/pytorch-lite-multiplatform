@@ -65,3 +65,23 @@ The return type of your inference is `ModelOutput` which contains the flat `data
 - the input to your inference method can either be a list of plain tensors (is flatted to arguments) or dictionary with string keys and tensor values
 - only float and long tensors are supported
 - the return type of your model's `forward` must be a plain tensor of data type float
+
+## Running tests
+
+To run the tests, first create the dummy torchscript module using:
+
+```
+python build_dummy_model.py
+```
+
+Use a Python environment where the torch dependency is available.
+
+The tests will run inference against this module on iOS and Android using the multiplatform implementation.
+
+### iOS
+
+Copy the created `dummy_model.ptl` into your simulator documents directory and run the iOS tests using
+
+```
+./gradlew iosSimulatorX64Test
+```
