@@ -4,7 +4,7 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'LibTorchWrapper'
     spec.version                  = '0.1.0'
-    spec.homepage                 = 'voize.de'
+    spec.homepage                 = 'https://github.com/voize-gmbh/pytorch-lite-multiplatform'
     spec.source                   = { :http=> ''}
     spec.authors                  = { 'Erik Ziegler' => 'erik@voize.de' }
     spec.license                  = { :type => 'MIT' }
