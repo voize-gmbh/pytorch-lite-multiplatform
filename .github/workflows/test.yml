@@ -21,4 +21,4 @@ jobs:
       - name: Install cocoapods-generate
         run: gem install cocoapods-generate
       - name: Gradle Build
-        run: ./gradlew build
+        run: ./gradlew build -x test
