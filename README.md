@@ -11,6 +11,10 @@ Add the following to your `build.gradle` as a `commonMain` dependency.
 implementation("de.voize:pytorch-lite-multiplatform:<version>")
 ```
 
+Additionally, include the `LibTorchWrapper` pod in your project.
+
+**Currently, these artifacts are not published in a public registry. If you want to integrate this project, please open an issue.**
+
 ## Usage
 
 First, [export your PyTorch model for the lite interpreter](https://pytorch.org/tutorials/recipes/mobile_interpreter.html).
