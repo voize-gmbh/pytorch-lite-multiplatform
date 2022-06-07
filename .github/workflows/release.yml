@@ -3,14 +3,29 @@ on:
   release:
     types: [created]
 jobs:
-  publish:
+  publish-maven:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install cocoapods-generate
-        run: gem install cocoapods-generate
-      - name: Publish package
-        run: ./gradlew publish
+      - run: gem install cocoapods-generate
+      - run: ./gradlew publish
         env:
           GITLAB_REGISTRY_URL: ${{ secrets.GITLAB_REGISTRY_URL }}
           GITLAB_REGISTRY_DEPLOY_TOKEN: ${{ secrets.GITLAB_REGISTRY_DEPLOY_TOKEN }}
+  publish-cocoapods:
+    runs-on: macos-latest
+    env:
+      VOIZE_COCOAPODS_SPECS_REPO_NAME: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_NAME }}
+      VOIZE_COCOAPODS_SPECS_REPO_URL: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo "#!/bin/bash" > .git-credentials
+          echo "echo username=$VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME" >> .git-credentials
+          echo "echo password=$VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD" >> .git-credentials
+        env:
+          VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME }}
+          VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD }}
+      - run: git config --global credential.helper "/bin/bash $(pwd)/.git-credentials"
+      - run: pod repo add $VOIZE_COCOAPODS_SPECS_REPO_NAME $VOIZE_COCOAPODS_SPECS_REPO_URL
+      - run: pod repo push $VOIZE_COCOAPODS_SPECS_REPO_NAME LibTorchWrapper.podspec --use-libraries --allow-warnings
