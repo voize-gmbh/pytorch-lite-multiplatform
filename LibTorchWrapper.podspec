@@ -1,8 +1,8 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'LibTorchWrapper'
-    spec.version                  = '0.1.0'
+    spec.version                  = '0.2.1'
     spec.homepage                 = 'https://github.com/voize-gmbh/pytorch-lite-multiplatform'
-    spec.source                   = { :git => 'https://github.com/voize-gmbh/pytorch-lite-multiplatform.git' }
+    spec.source                   = { :git => 'https://github.com/voize-gmbh/pytorch-lite-multiplatform.git', :tag => 'v0.2.1' }
     spec.authors                  = { 'Erik Ziegler' => 'erik@voize.de' }
     spec.license                  = { :type => 'MIT' }
     spec.summary                  = 'Objective-C wrapper for LibTorch-Lite, to be used with pytorch-lite-multiplatform'
