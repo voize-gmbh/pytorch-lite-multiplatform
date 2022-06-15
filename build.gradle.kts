@@ -138,7 +138,7 @@ publishing {
     repositories {
         if (
             System.getenv("GITLAB_REGISTRY_URL") != null &&
-            System.getenv("GITLAB_REGISTRY_TOKEN") != null
+            System.getenv("GITLAB_REGISTRY_DEPLOY_TOKEN") != null
         ) {
             maven {
                 url = uri(System.getenv("GITLAB_REGISTRY_URL"))
