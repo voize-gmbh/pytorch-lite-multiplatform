@@ -18,7 +18,7 @@ repositories {
 
 kotlin {
     android {
-        publishLibraryVariants("debug", "release")
+        publishLibraryVariants("release")
     }
 
     ios {
