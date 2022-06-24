@@ -7,6 +7,7 @@ class DummyModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.linear = nn.Linear(10, 10)
+        self.cos_sim = nn.CosineSimilarity()
 
     @torch.jit.export
     def inference(self, x: torch.Tensor):
@@ -15,6 +16,14 @@ class DummyModel(nn.Module):
     @torch.jit.export
     def inference_dict(self, x: Dict[str, torch.Tensor]):
         return self.linear(x["x"])
+
+    @torch.jit.export
+    def identity(self, x: torch.Tensor):
+        return x.float()
+
+    @torch.jit.export
+    def similarity(self, x: torch.Tensor, y: torch.Tensor):
+        return self.cos_sim(x, y)
 
     def forward(self, x):
         return self.linear(x)
