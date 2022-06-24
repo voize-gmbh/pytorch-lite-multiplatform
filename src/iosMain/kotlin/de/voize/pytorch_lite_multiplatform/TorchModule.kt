@@ -7,29 +7,25 @@ actual class TorchModule actual constructor(path: String) {
     private val module = LibTorchWrapperTorchModule(fileAtPath = path)
 
     actual fun runMethod(methodName: String, inputs: List<Tensor>): ModelOutput {
-        return memScoped {
-            val output = module.runMethod(methodName, inputs.map { it.getTensor() })
+        val output = memScoped {
+            module.runMethod(methodName, inputs.map { it.getTensor(this) })
+        } ?: throw IllegalArgumentException("Model output can not be null")
 
-            output?.let {
-                ModelOutput(
-                    (it.data as List<Float>).toFloatArray(),
-                    (it.shape as List<Long>).toLongArray(),
-                )
-            } ?: throw IllegalArgumentException("Model output can not be null")
-        }
+        return ModelOutput(
+            (output.data as List<Float>).toFloatArray(),
+            (output.shape as List<Long>).toLongArray(),
+        )
     }
 
     actual fun runMethod(methodName: String, inputs: Map<String, Tensor>): ModelOutput {
-        return memScoped {
-            val output = module.runMethodMap(methodName, inputs.mapValues { it.value.getTensor() })
+        val output = memScoped {
+            module.runMethodMap(methodName, inputs.mapValues { it.value.getTensor(this) })
+        } ?: throw IllegalArgumentException("Model output can not be null")
 
-            output?.let {
-                ModelOutput(
-                    (it.data as List<Float>).toFloatArray(),
-                    (it.shape as List<Long>).toLongArray(),
-                )
-            } ?: throw IllegalArgumentException("Model output can not be null")
-        }
+        return ModelOutput(
+            (output.data as List<Float>).toFloatArray(),
+            (output.shape as List<Long>).toLongArray(),
+        )
     }
 
     actual fun forward(inputs: List<Tensor>): ModelOutput {

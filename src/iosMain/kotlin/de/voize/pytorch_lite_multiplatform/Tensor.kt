@@ -4,15 +4,15 @@ import kotlinx.cinterop.*
 import cocoapods.LibTorchWrapper.Tensor as LibTorchWrapperTensor
 
 actual abstract class Tensor {
-    abstract fun getTensor(): LibTorchWrapperTensor
+    abstract fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor
 }
 
 actual class LongTensor actual constructor(
     private val data: LongArray,
     private val shape: LongArray
 ) : Tensor() {
-    override fun getTensor(): LibTorchWrapperTensor {
-        return memScoped {
+    override fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor {
+        return with(nativePlacement) {
             val cData = allocArray<LongVar>(data.size)
             val cShape = allocArray<LongVar>(shape.size)
             data.forEachIndexed { index, value -> cData[index] = value }
@@ -26,8 +26,8 @@ actual class FloatTensor actual constructor(
     private val data: FloatArray,
     private val shape: LongArray
 ) : Tensor() {
-    override fun getTensor(): LibTorchWrapperTensor {
-        return memScoped {
+    override fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor {
+        return with(nativePlacement) {
             val cData = allocArray<FloatVar>(data.size)
             val cShape = allocArray<LongVar>(shape.size)
             data.forEachIndexed { index, value -> cData[index] = value }
