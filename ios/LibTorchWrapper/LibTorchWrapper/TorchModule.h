@@ -21,8 +21,6 @@ struct TensorContainer;
 - (nullable ModelOutput*)runMethodMap:(NSString*)methodName
                                 inputs:(NSDictionary<NSString*, Tensor*>*)inputs;
 
-- (ModelOutput*)processOutputTensor:(struct TensorContainer*)tensor;
-
 @end
 
 NS_ASSUME_NONNULL_END
