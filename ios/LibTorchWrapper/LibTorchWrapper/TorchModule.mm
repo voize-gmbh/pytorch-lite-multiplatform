@@ -3,10 +3,6 @@
 #import "Tensor.h"
 #import <LibTorch-Lite/LibTorch-Lite.h>
 
-struct TensorContainer {
-    at::Tensor tensor;
-};
-
 @implementation TorchModule {
 @protected
     torch::jit::mobile::Module _impl;
@@ -36,8 +32,7 @@ struct TensorContainer {
 
         at::Tensor outputTensor = _impl.get_method(std::string(methodName.UTF8String))(std::move(iValues)).toTensor();
 
-        TensorContainer container = { .tensor = outputTensor };
-        return [self processOutputTensor:(&container)];
+        return [self processOutputTensor:outputTensor];
     } catch (const std::exception& exception) {
         NSLog(@"%s", exception.what());
     }
@@ -57,8 +52,8 @@ struct TensorContainer {
         }
 
         at::Tensor outputTensor = _impl.run_method(std::string(methodName.UTF8String), inputDict).toTensor();
-        TensorContainer container = { .tensor = outputTensor };
-        return [self processOutputTensor:(&container)];
+
+        return [self processOutputTensor:outputTensor];
     } catch (const std::exception& exception) {
         NSLog(@"%s", exception.what());
     }
@@ -66,15 +61,14 @@ struct TensorContainer {
     return nil;
 }
 
-- (ModelOutput*)processOutputTensor:(TensorContainer*)tensor {
-    const float* outputData = tensor->tensor.data_ptr<float>();
-    at::IntArrayRef outputShape = tensor->tensor.sizes();
+- (ModelOutput*)processOutputTensor:(at::Tensor&)tensor {
+    const float* outputData = tensor.data_ptr<float>();
+    at::IntArrayRef outputShape = tensor.sizes();
     
     size_t dataLen = 1;
     for (int i = 0; i < outputShape.size(); i++) {
         dataLen *= *(outputShape.data() + i);
     }
-    std::vector<float> outputDataVec {outputData, outputData + dataLen};
     
     NSMutableArray* data = [NSMutableArray array];
     for (int i = 0; i < dataLen; i++) {
@@ -86,8 +80,8 @@ struct TensorContainer {
         [shape addObject:@(outputShape[i])];
     }
     
-    ModelOutput *output = [[ModelOutput alloc] initWithData:[data copy]
-                                                     shape:[shape copy]];
+    ModelOutput *output = [[ModelOutput alloc] initWithData:data
+                                                     shape:shape];
     
     return output;
 }
