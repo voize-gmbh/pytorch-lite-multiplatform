@@ -3,7 +3,7 @@
 
 Pod::Spec.new do |spec|
     spec.name                     = 'PLMLibTorchWrapper'
-    spec.version                  = '0.3.0'
+    spec.version                  = '0.3.1'
     spec.homepage                 = 'https://github.com/voize-gmbh/pytorch-lite-multiplatform'
     spec.source                   = { :http=> '' }
     spec.authors                  = { 'Erik Ziegler' => 'erik@voize.de' }
