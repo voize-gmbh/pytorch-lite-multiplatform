@@ -1,7 +1,7 @@
 package de.voize.pytorch_lite_multiplatform
 
 import com.suparnatural.core.fs.FileSystem
-import cocoapods.LibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
+import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 import kotlin.test.*
 
 class TorchModuleIOSTest {
