@@ -12,6 +12,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+      - name: Install cocoapods-generate
+        run: gem install cocoapods-generate
       - name: Release build
         run: ./gradlew build
       - name: Publish to MavenCentral
