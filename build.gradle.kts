@@ -5,7 +5,7 @@ plugins {
     kotlin("native.cocoapods") version "1.6.21"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
-    id("maven-publish")
+    id("convention.publication")
 }
 
 group = "de.voize"
@@ -114,11 +114,11 @@ task("iosSimulatorX64Test") {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(24)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
     }
     buildTypes {
         getByName("release") {
@@ -131,26 +131,5 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
-publishing {
-    repositories {
-        if (
-            System.getenv("GITLAB_REGISTRY_URL") != null &&
-            System.getenv("GITLAB_REGISTRY_DEPLOY_TOKEN") != null
-        ) {
-            maven {
-                url = uri(System.getenv("GITLAB_REGISTRY_URL"))
-                name = "GitLab"
-                credentials(HttpHeaderCredentials::class) {
-                    name = "Deploy-Token"
-                    value = System.getenv("GITLAB_REGISTRY_DEPLOY_TOKEN")
-                }
-                authentication {
-                    create<HttpHeaderAuthentication>("header")
-                }
-            }
-        }
     }
 }
