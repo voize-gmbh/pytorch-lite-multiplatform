@@ -24,18 +24,8 @@ jobs:
   publish-cocoapods:
     name: Release build and publish to Cocoapods
     runs-on: macos-latest
-    env:
-      VOIZE_COCOAPODS_SPECS_REPO_NAME: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_NAME }}
-      VOIZE_COCOAPODS_SPECS_REPO_URL: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_URL }}
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          echo "#!/bin/bash" > .git-credentials
-          echo "echo username=$VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME" >> .git-credentials
-          echo "echo password=$VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD" >> .git-credentials
+      - run: pod trunk push PLMLibTorchWrapper.podspec --use-libraries --allow-warnings
         env:
-          VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_USERNAME }}
-          VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD }}
-      - run: git config --global credential.helper "/bin/bash $(pwd)/.git-credentials"
-      - run: pod repo add $VOIZE_COCOAPODS_SPECS_REPO_NAME $VOIZE_COCOAPODS_SPECS_REPO_URL
-      - run: pod repo push $VOIZE_COCOAPODS_SPECS_REPO_NAME PLMLibTorchWrapper.podspec --use-libraries --allow-warnings
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
