@@ -4,15 +4,25 @@ on:
     types: [created]
 jobs:
   publish-maven:
+    name: Release build and publish to Maven Repository
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - run: gem install cocoapods-generate
-      - run: ./gradlew publish
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Release build
+        run: ./gradlew build
+      - name: Publish to MavenCentral
+        run: ./gradlew publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
-          GITLAB_REGISTRY_URL: ${{ secrets.GITLAB_REGISTRY_URL }}
-          GITLAB_REGISTRY_DEPLOY_TOKEN: ${{ secrets.GITLAB_REGISTRY_DEPLOY_TOKEN }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_SIGNING_KEY: ${{ secrets.SIGNING_SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
   publish-cocoapods:
+    name: Release build and publish to Cocoapods
     runs-on: macos-latest
     env:
       VOIZE_COCOAPODS_SPECS_REPO_NAME: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_NAME }}
