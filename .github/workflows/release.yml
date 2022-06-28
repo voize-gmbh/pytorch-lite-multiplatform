@@ -15,7 +15,7 @@ jobs:
       - name: Install cocoapods-generate
         run: gem install cocoapods-generate
       - name: Release build
-        run: ./gradlew build
+        run: ./gradlew build -x iosX64Test
       - name: Publish to MavenCentral
         run: ./gradlew publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
