@@ -1,7 +1,7 @@
 package de.voize.pytorch_lite_multiplatform
 
 import kotlinx.cinterop.*
-import cocoapods.LibTorchWrapper.Tensor as LibTorchWrapperTensor
+import cocoapods.PLMLibTorchWrapper.Tensor as LibTorchWrapperTensor
 
 actual abstract class Tensor {
     abstract fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor

@@ -1,7 +1,7 @@
 package de.voize.pytorch_lite_multiplatform
 
 import kotlinx.cinterop.*
-import cocoapods.LibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
+import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
 actual class TorchModule actual constructor(path: String) {
     private val module = LibTorchWrapperTorchModule(fileAtPath = path)

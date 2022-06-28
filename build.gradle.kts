@@ -43,7 +43,7 @@ kotlin {
         homepage = "https://github.com/voize-gmbh/pytorch-lite-multiplatform"
         summary = "Kotlin Multiplatform wrapper for PyTorch Lite"
 
-        pod("LibTorchWrapper") {
+        pod("PLMLibTorchWrapper") {
             version = "0.2.2"
             source = path(project.file("ios/LibTorchWrapper"))
         }
@@ -76,7 +76,7 @@ kotlin {
     }
 }
 
-tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefLibTorchWrapper").configure {
+tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefPLMLibTorchWrapper").configure {
     doLast {
         outputFile.writeText("""
             language = Objective-C
@@ -87,11 +87,11 @@ tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefLibTorchW
 
 tasks.named("linkDebugTestIosX64").configure {
     doFirst {
-        val basePath = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/LibTorchWrapper")
-        val frameworkPath = basePath.resolve("LibTorchWrapper.framework")
+        val basePath = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/PLMLibTorchWrapper")
+        val frameworkPath = basePath.resolve("PLMLibTorchWrapper.framework")
         frameworkPath.mkdir()
-        val frameworkLibPath = frameworkPath.resolve("LibTorchWrapper")
-        basePath.resolve("libLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
+        val frameworkLibPath = frameworkPath.resolve("PLMLibTorchWrapper")
+        basePath.resolve("libPLMLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
     }
 }
 
