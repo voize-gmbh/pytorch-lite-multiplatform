@@ -38,4 +38,4 @@ jobs:
           VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD: ${{ secrets.VOIZE_COCOAPODS_SPECS_REPO_DEPLOY_KEY_PASSWORD }}
       - run: git config --global credential.helper "/bin/bash $(pwd)/.git-credentials"
       - run: pod repo add $VOIZE_COCOAPODS_SPECS_REPO_NAME $VOIZE_COCOAPODS_SPECS_REPO_URL
-      - run: pod repo push $VOIZE_COCOAPODS_SPECS_REPO_NAME LibTorchWrapper.podspec --use-libraries --allow-warnings
+      - run: pod repo push $VOIZE_COCOAPODS_SPECS_REPO_NAME PLMLibTorchWrapper.podspec --use-libraries --allow-warnings

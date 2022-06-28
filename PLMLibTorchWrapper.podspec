@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'LibTorchWrapper'
+    spec.name                     = 'PLMLibTorchWrapper'
     spec.version                  = '0.2.2'
     spec.homepage                 = 'https://github.com/voize-gmbh/pytorch-lite-multiplatform'
     spec.source                   = { :git => 'https://github.com/voize-gmbh/pytorch-lite-multiplatform.git', :tag => 'v0.2.2' }
