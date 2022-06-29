@@ -63,7 +63,7 @@ publishing {
 
             licenses {
                 license {
-                    name.set("MIT")
+                    name.set("Apache-2.0")
                     url.set("https://opensource.org/licenses/MIT")
                 }
             }
