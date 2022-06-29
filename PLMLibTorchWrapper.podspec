@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
 
     spec.source_files = "ios/LibTorchWrapper/LibTorchWrapper/**/*.{h,m,mm}"
 
-    spec.dependency 'LibTorch-Lite', '1.11.0'
+    spec.dependency 'LibTorch-Lite', '1.12.0'
 
     spec.xcconfig = {
         'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/LibTorch-Lite/install/include/"',

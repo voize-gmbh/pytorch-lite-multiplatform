@@ -68,7 +68,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 rootProject
-                implementation("org.pytorch:pytorch_android_lite:1.11")
+                implementation("org.pytorch:pytorch_android_lite:1.12.1")
             }
         }
         val androidTest by getting {
