@@ -24,12 +24,15 @@ kotlin {
     ios {
         val libTorchPodDir = project.file("build/cocoapods/synthetic/IOS/Pods/LibTorch-Lite")
         val libTorchLibsDir = libTorchPodDir.resolve("install/lib")
+        val libs = listOf(
+            "c10", "torch", "torch_cpu", "XNNPACK", "clog",
+            "cpuinfo", "eigen_blas", "pthreadpool", "pytorch_qnnpack"
+        )
 
         binaries.all {
             linkerOpts(
                 "-L${libTorchLibsDir.absolutePath}",
-                "-lc10", "-ltorch", "-ltorch_cpu", "-lXNNPACK",
-                "-lclog", "-lcpuinfo", "-leigen_blas", "-lpthreadpool", "-lpytorch_qnnpack",
+                *libs.map { "-l$it" }.toTypedArray(),
                 "-force_load", libTorchLibsDir.resolve("libtorch.a").absolutePath,
                 "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
                 "-all_load"
