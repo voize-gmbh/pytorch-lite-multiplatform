@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin("multiplatform") version "1.6.21"
-    kotlin("native.cocoapods") version "1.6.21"
+    kotlin("multiplatform") version "1.7.0"
+    kotlin("native.cocoapods") version "1.7.0"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("convention.publication")
@@ -22,7 +22,7 @@ kotlin {
     }
 
     ios {
-        val libTorchPodDir = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/Pods/LibTorch-Lite")
+        val libTorchPodDir = project.file("build/cocoapods/synthetic/IOS/Pods/LibTorch-Lite")
         val libTorchLibsDir = libTorchPodDir.resolve("install/lib")
 
         binaries.all {
@@ -87,7 +87,7 @@ tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefPLMLibTor
 
 tasks.named("linkDebugTestIosX64").configure {
     doFirst {
-        val basePath = project.file("build/cocoapods/synthetic/IOS/pytorch_lite_multiplatform/build/Release-iphonesimulator/PLMLibTorchWrapper")
+        val basePath = project.file("build/cocoapods/synthetic/IOS/build/Release-iphonesimulator/PLMLibTorchWrapper")
         val frameworkPath = basePath.resolve("PLMLibTorchWrapper.framework")
         frameworkPath.mkdir()
         val frameworkLibPath = frameworkPath.resolve("PLMLibTorchWrapper")
