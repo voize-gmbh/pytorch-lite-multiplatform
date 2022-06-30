@@ -17,89 +17,123 @@ class TorchModuleIOSTest {
 
     @Test
     fun itCanRunMethod() {
-        val module = TorchModule(localModulePath)
-        val output = module.runMethod("inference", listOf(FloatTensor(
-            FloatArray(10) { 0.0F },
-            longArrayOf(1, 10),
-        )))
-        assertEquals(10, output.data.size)
-        assertContentEquals(longArrayOf(1, 10), output.shape)
-    }
-
-    @Test
-    fun itCanRunMethodWithDictInput() {
-        val module = TorchModule(localModulePath)
-        val output = module.runMethod(
-            "inference_dict",
-            mapOf(
-                "x" to FloatTensor(
-                    FloatArray(10) { 0.0F },
-                    longArrayOf(1, 10),
-                )
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val inputTensor = Tensor.fromBlob(
+                FloatArray(10) { 0.0F },
+                longArrayOf(1, 10),
+                this,
             )
-        )
-        assertEquals(10, output.data.size)
-        assertContentEquals(longArrayOf(1, 10), output.shape)
+            val input = IValue.from(inputTensor)
+            val output = module.runMethod("inference", input)
+            assertTrue { output.isTensor() }
+            val outputTensor = output.toTensor()
+
+            assertEquals(10, outputTensor.getDataAsFloatArray().size)
+            assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
+        }
     }
 
     @Test
     fun itCanRunForward() {
-        val module = TorchModule(localModulePath)
-        val output = module.forward(listOf(FloatTensor(
-            FloatArray(10) { 0.0F },
-            longArrayOf(1, 10),
-        )))
-        assertEquals(10, output.data.size)
-        assertContentEquals(longArrayOf(1, 10), output.shape)
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val output = module.forward(
+                IValue.from(
+                    Tensor.fromBlob(
+                        FloatArray(10) { 0.0F },
+                        longArrayOf(1, 10),
+                        this,
+                    )
+                )
+            )
+            val outputTensor = output.toTensor()
+            assertEquals(10, outputTensor.getDataAsFloatArray().size)
+            assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
+        }
     }
 
     @Test
     fun testIdentityLong() {
-        val module = TorchModule(localModulePath)
-        val data = longArrayOf(3L, 2L, 0L, 0L, 1L, 6L)
-        val shape = longArrayOf(2, 3)
-        val tensor = LongTensor(data, shape)
-        val output = module.runMethod(
-            "identity",
-            listOf(tensor)
-        )
-        assertEquals(data.toList().map { it.toFloat() }, output.data.toList())
-        assertEquals(shape.toList(), output.shape.toList())
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val data = longArrayOf(3L, 2L, 0L, 0L, 1L, 6L)
+            val shape = longArrayOf(2, 3)
+            val tensor = Tensor.fromBlob(data, shape, this)
+            val output = module.runMethod(
+                "identity",
+                IValue.from(tensor)
+            )
+            val outputTensor = output.toTensor()
+            assertEquals(data.toList(), outputTensor.getDataAsLongArray().toList())
+            assertEquals(shape.toList(), outputTensor.shape().toList())
+        }
     }
 
     @Test
     fun testIdentity() {
-        val module = TorchModule(localModulePath)
-        val data = floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F)
-        val shape = longArrayOf(2, 3)
-        val tensor = FloatTensor(data, shape)
-        val output = module.runMethod(
-            "identity",
-            listOf(tensor)
-        )
-        assertEquals(data.toList(), output.data.toList())
-        assertEquals(shape.toList(), output.shape.toList())
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val data = floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F)
+            val shape = longArrayOf(2, 3)
+            val tensor = Tensor.fromBlob(data, shape, this)
+            val output = module.runMethod(
+                "identity",
+                IValue.from(tensor)
+            )
+            val outputTensor = output.toTensor()
+            assertEquals(data.toList(), outputTensor.getDataAsFloatArray().toList())
+            assertEquals(shape.toList(), outputTensor.shape().toList())
+        }
     }
 
     @Test
     fun testSimilarity() {
-        val module = TorchModule(localModulePath)
-        val output = module.runMethod(
-            "similarity",
-            listOf(
-                FloatTensor(
-                    floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F),
-                    longArrayOf(2, 3),
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val output = module.runMethod(
+                "similarity",
+                IValue.from(
+                    Tensor.fromBlob(
+                        floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F),
+                        longArrayOf(2, 3),
+                        this,
+                    )
                 ),
-                FloatTensor(
-                    floatArrayOf(1.02F, 0.17F, 1.99F, 1.02F, 0.82F, 1.33F),
-                    longArrayOf(2, 3),
+                IValue.from(
+                    Tensor.fromBlob(
+                        floatArrayOf(1.02F, 0.17F, 1.99F, 1.02F, 0.82F, 1.33F),
+                        longArrayOf(2, 3),
+                        this,
+                    )
+                )
+            )
+            val outputTensor = output.toTensor()
+            val data = outputTensor.getDataAsFloatArray()
+            assertEquals(listOf(2L), outputTensor.shape().toList())
+            assertEquals(0.56F, data[0], 0.01F)
+            assertEquals(0.89F, data[1], 0.01F)
+        }
+    }
+
+    /*
+    @Test
+    fun itCanRunMethodWithDictInput() {
+        val module = TorchModule(localModulePath)
+        val input = IValue.dictStringKeyFrom(
+            mapOf(
+                "x" to IValue.from(
+                    Tensor.fromBlob(
+                        FloatArray(10) { 0.0F },
+                        longArrayOf(1, 10),
+                    )
                 )
             )
         )
-
-        assertEquals(listOf(2L), output.shape.toList())
-        assertEquals(0.56F, output.data[0], 0.01F)
-        assertEquals(0.89F, output.data[1], 0.01F)
+        val output = module.runMethod("inference_dict", input)
+        val outputTensor = output.toTensor()
+        assertEquals(10, outputTensor.getDataAsFloatArray().size)
+        assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
     }
+    */
 }

@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ModelOutput.h"
-#import "Tensor.h"
+#import "IValueWrapper.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,11 +14,8 @@ struct TensorContainer;
 - (instancetype)init NS_UNAVAILABLE;
 
 
-- (nullable ModelOutput*)runMethod:(NSString*)methodName
-                                inputs:(NSArray<Tensor*>*)inputs;
-
-- (nullable ModelOutput*)runMethodMap:(NSString*)methodName
-                                inputs:(NSDictionary<NSString*, Tensor*>*)inputs;
+- (nullable IValueWrapper*)runMethod:(NSString*)methodName
+                                inputs:(NSArray<IValueWrapper*>*)inputs;
 
 @end
 

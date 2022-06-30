@@ -1,23 +1,31 @@
 package de.voize.pytorch_lite_multiplatform
 
-import org.pytorch.Tensor as TorchTensor
+import org.pytorch.MemoryFormat
+import org.pytorch.Tensor as NativeTensor
 
-actual abstract class Tensor {
-    abstract fun getTensor(): TorchTensor
-}
+actual class Tensor internal constructor(internal val nativeTensor: NativeTensor) {
+    actual fun getDataAsIntArray() = nativeTensor.dataAsIntArray
+    actual fun getDataAsFloatArray() = nativeTensor.dataAsFloatArray
+    actual fun getDataAsLongArray() = nativeTensor.dataAsLongArray
+    actual fun getDataAsDoubleArray() = nativeTensor.dataAsDoubleArray
+    actual fun shape() = nativeTensor.shape()
+    actual fun numel() = nativeTensor.numel()
 
-actual class LongTensor actual constructor(data: LongArray, shape: LongArray) : Tensor() {
-    private val tensor = TorchTensor.fromBlob(data, shape)
+    actual companion object {
+        actual fun fromBlob(data: IntArray, shape: LongArray, scope: PLMScope): Tensor {
+            return Tensor(NativeTensor.fromBlob(data, shape, MemoryFormat.CONTIGUOUS))
+        }
 
-    override fun getTensor(): TorchTensor {
-        return tensor
-    }
-}
+        actual fun fromBlob(data: FloatArray, shape: LongArray, scope: PLMScope): Tensor {
+            return Tensor(NativeTensor.fromBlob(data, shape, MemoryFormat.CONTIGUOUS))
+        }
 
-actual class FloatTensor actual constructor(data: FloatArray, shape: LongArray) : Tensor() {
-    private val tensor = TorchTensor.fromBlob(data, shape)
+        actual fun fromBlob(data: LongArray, shape: LongArray, scope: PLMScope): Tensor {
+            return Tensor(NativeTensor.fromBlob(data, shape, MemoryFormat.CONTIGUOUS))
+        }
 
-    override fun getTensor(): TorchTensor {
-        return tensor
+        actual fun fromBlob(data: DoubleArray, shape: LongArray, scope: PLMScope): Tensor {
+            return Tensor(NativeTensor.fromBlob(data, shape, MemoryFormat.CONTIGUOUS))
+        }
     }
 }

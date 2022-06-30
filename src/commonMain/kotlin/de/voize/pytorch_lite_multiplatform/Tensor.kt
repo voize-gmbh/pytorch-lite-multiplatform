@@ -1,7 +1,19 @@
 package de.voize.pytorch_lite_multiplatform
 
-expect abstract class Tensor()
+expect class Tensor {
+    fun getDataAsIntArray(): IntArray
+    fun getDataAsFloatArray(): FloatArray
+    fun getDataAsLongArray(): LongArray
+    fun getDataAsDoubleArray(): DoubleArray
+    fun shape(): LongArray
+    fun numel(): Long
 
-expect class LongTensor(data: LongArray, shape: LongArray) : Tensor
+    companion object {
+        fun fromBlob(data: IntArray, shape: LongArray, scope: PLMScope): Tensor
+        fun fromBlob(data: FloatArray, shape: LongArray, scope: PLMScope): Tensor
+        fun fromBlob(data: LongArray, shape: LongArray, scope: PLMScope): Tensor
+        fun fromBlob(data: DoubleArray, shape: LongArray, scope: PLMScope): Tensor
+    }
+}
 
-expect class FloatTensor(data: FloatArray, shape: LongArray) : Tensor
+fun Tensor.toString() = "Tensor(shape=${shape().toList()})"
