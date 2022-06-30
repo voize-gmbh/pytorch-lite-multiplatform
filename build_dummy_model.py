@@ -19,7 +19,7 @@ class DummyModel(nn.Module):
 
     @torch.jit.export
     def identity(self, x: torch.Tensor):
-        return x.float()
+        return x
 
     @torch.jit.export
     def similarity(self, x: torch.Tensor, y: torch.Tensor):

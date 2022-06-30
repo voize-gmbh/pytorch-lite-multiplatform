@@ -1,38 +1,88 @@
 package de.voize.pytorch_lite_multiplatform
 
 import kotlinx.cinterop.*
-import cocoapods.PLMLibTorchWrapper.Tensor as LibTorchWrapperTensor
+import cocoapods.PLMLibTorchWrapper.Tensor as NativeTensor
 
-actual abstract class Tensor {
-    abstract fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor
-}
-
-actual class LongTensor actual constructor(
-    private val data: LongArray,
-    private val shape: LongArray
-) : Tensor() {
-    override fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor {
-        return with(nativePlacement) {
-            val cData = allocArray<LongVar>(data.size)
-            val cShape = allocArray<LongVar>(shape.size)
-            data.forEachIndexed { index, value -> cData[index] = value }
-            shape.forEachIndexed { index, value -> cShape[index] = value }
-            LibTorchWrapperTensor(longData = cData, shape = cShape, shapeLength = shape.size.toULong())
-        }
+actual class Tensor internal constructor(val nativeTensor: NativeTensor) {
+    actual fun getDataAsIntArray(): IntArray {
+        val data = nativeTensor.getDataAsIntArray() as List<Int>
+        return data.toIntArray()
     }
-}
 
-actual class FloatTensor actual constructor(
-    private val data: FloatArray,
-    private val shape: LongArray
-) : Tensor() {
-    override fun getTensor(nativePlacement: NativePlacement): LibTorchWrapperTensor {
-        return with(nativePlacement) {
-            val cData = allocArray<FloatVar>(data.size)
-            val cShape = allocArray<LongVar>(shape.size)
-            data.forEachIndexed { index, value -> cData[index] = value }
-            shape.forEachIndexed { index, value -> cShape[index] = value }
-            LibTorchWrapperTensor(floatData = cData, shape = cShape, shapeLength = shape.size.toULong())
+    actual fun getDataAsFloatArray(): FloatArray {
+        val data = nativeTensor.getDataAsFloatArray() as List<Float>
+        return data.toFloatArray()
+    }
+
+    actual fun getDataAsLongArray(): LongArray {
+        val data = nativeTensor.getDataAsLongArray() as List<Long>
+        return data.toLongArray()
+    }
+
+    actual fun getDataAsDoubleArray(): DoubleArray {
+        val data = nativeTensor.getDataAsDoubleArray() as List<Double>
+        return data.toDoubleArray()
+    }
+
+    actual fun shape(): LongArray {
+        return (nativeTensor.shape() as List<Long>).toLongArray()
+    }
+
+    actual fun numel(): Long {
+        return this.shape().fold(1) { acc, s -> acc * s }
+    }
+
+    actual companion object {
+        actual fun fromBlob(
+            data: IntArray,
+            shape: LongArray,
+            scope: PLMScope,
+        ): Tensor = with(scope.nativePlacement) {
+            val nativeTensor = NativeTensor(
+                intData = allocArray(data.size) { data[it] },
+                shape = allocArray(shape.size) { shape[it] },
+                shapeLength = shape.size.toULong()
+            )
+            Tensor(nativeTensor)
+        }
+
+        actual fun fromBlob(
+            data: FloatArray,
+            shape: LongArray,
+            scope: PLMScope,
+        ): Tensor = with(scope.nativePlacement) {
+            val nativeTensor = NativeTensor(
+                floatData = allocArray(data.size) { data[it] },
+                shape = allocArray(shape.size) { shape[it] },
+                shapeLength = shape.size.toULong()
+            )
+            Tensor(nativeTensor)
+        }
+
+        actual fun fromBlob(
+            data: LongArray,
+            shape: LongArray,
+            scope: PLMScope,
+        ): Tensor = with(scope.nativePlacement) {
+            val nativeTensor = NativeTensor(
+                longData = allocArray(data.size) { data[it] },
+                shape = allocArray(shape.size) { shape[it] },
+                shapeLength = shape.size.toULong()
+            )
+            Tensor(nativeTensor)
+        }
+
+        actual fun fromBlob(
+            data: DoubleArray,
+            shape: LongArray,
+            scope: PLMScope,
+        ): Tensor = with(scope.nativePlacement) {
+            val nativeTensor = NativeTensor(
+                doubleData = allocArray(data.size) { data[it] },
+                shape = allocArray(shape.size) { shape[it] },
+                shapeLength = shape.size.toULong()
+            )
+            Tensor(nativeTensor)
         }
     }
 }
