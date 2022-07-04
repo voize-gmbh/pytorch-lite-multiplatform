@@ -1,0 +1,31 @@
+PODS:
+  - LibTorch-Lite (1.12.0):
+    - LibTorch-Lite/Core (= 1.12.0)
+  - LibTorch-Lite/Core (1.12.0):
+    - LibTorch-Lite/Torch
+  - LibTorch-Lite/Torch (1.12.0)
+  - PLMLibTorchWrapper (0.4.0):
+    - LibTorch-Lite (= 1.12.0)
+  - shared (1.0):
+    - PLMLibTorchWrapper (= 0.4.0)
+
+DEPENDENCIES:
+  - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - LibTorch-Lite
+    - PLMLibTorchWrapper
+
+EXTERNAL SOURCES:
+  shared:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  LibTorch-Lite: c2210be0ed41c3a7f972c82715663a44d35ad97c
+  PLMLibTorchWrapper: 63ed9cda7145355c05c63583a450ad3276b054a8
+  shared: 86edba3c187dfab84ca91889220e3d3fc4956ad5
+
+PODFILE CHECKSUM: 73a10c9f24c08f72746fff691b97ba7c517cc76f
+
+COCOAPODS: 1.11.3
