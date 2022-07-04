@@ -7,13 +7,43 @@ You can use this library in your Kotlin multi-platform project to write mobile i
 
 ## Installation
 
-Add the following to your `build.gradle` as a `commonMain` dependency.
+Add the following to your `shared/build.gradle.kts` as a `commonMain` dependency.
 
-```
+```kotlin
 implementation("de.voize:pytorch-lite-multiplatform:<version>")
 ```
 
-Additionally, include the `PLMLibTorchWrapper` pod in your project.
+Add the `PLMLibTorchWrapper` pod to your `cocoapods` plugin block in `shared/build.gradle.kts` and add `useLibraries()` because the `PLMLibTorchWrapper` pod has a dependency on the `LibTorch-Lite` pod which contains static libraries.
+
+```kotlin
+cocoapods {
+    ...
+
+    pod("PLMLibTorchWrapper") {
+        version = "<version>"
+    }
+
+    useLibraries()
+}
+```
+
+Then, add the following to your `shared/build.gradle.kts` as a workaround until `PLMLibTorchWrapper` pod has a modulemap or [this issue](https://youtrack.jetbrains.com/issue/KT-44155/Cocoapods-doesnt-support-pods-without-module-map-file-inside) is resolved.
+
+```kotlin
+tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefPLMLibTorchWrapper").configure {
+    doLast {
+        outputFile.writeText("""
+            language = Objective-C
+            headers = LibTorchWrapper.h
+        """.trimIndent())
+    }
+}
+```
+
+Additional steps:
+
+- make sure bitcode is disabled in your iOS XCode project
+- make sure that your iOS app's Podfile does **not** include `use_frameworks!`
 
 ## Usage
 
