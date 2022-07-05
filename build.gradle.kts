@@ -55,14 +55,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation("com.suparnatural.kotlin:fs:1.1.0")
-            }
-        }
+        val commonMain by getting
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("com.suparnatural.kotlin:fs:1.1.0")
             }
         }
         val androidMain by getting {
