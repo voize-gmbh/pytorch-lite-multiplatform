@@ -5,7 +5,5 @@ target 'LibTorchWrapper' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for LibTorchWrapper
-  pod 'LibTorch-Lite', '1.13.0.1'
-  
+  pod 'VoizeLibTorch-Lite', '2.1.0'
 end

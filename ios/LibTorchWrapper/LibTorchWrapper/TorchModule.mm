@@ -1,7 +1,7 @@
 #import "TorchModule.h"
 #import "Tensor.h"
 #import "IValueWrapper.h"
-#import <LibTorch-Lite/LibTorch-Lite.h>
+#import <VoizeLibTorch-Lite/LibTorch-Lite.h>
 
 @implementation TorchModule {
 @protected

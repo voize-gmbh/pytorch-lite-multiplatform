@@ -1,4 +1,4 @@
-#import <LibTorch-Lite/LibTorch-Lite.h>
+#import <VoizeLibTorch-Lite/LibTorch-Lite.h>
 #import <Foundation/Foundation.h>
 #import "Tensor.h"
 
