@@ -39,6 +39,7 @@ kotlin {
             )
         }
     }
+    iosSimulatorArm64()
 
     cocoapods {
         ios.deploymentTarget = "13.5"
