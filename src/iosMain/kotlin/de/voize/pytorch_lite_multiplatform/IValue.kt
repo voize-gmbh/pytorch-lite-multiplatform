@@ -39,7 +39,9 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
         return (nativeIValue.toList() as List<IValueWrapper>).map { IValue(it) }
     }
 
-    actual fun toTuple() = toList()
+    actual fun toTuple(): List<IValue> {
+        return (nativeIValue.toTuple() as List<IValueWrapper>).map { IValue(it) }
+    }
 
     actual fun toBoolList() = toList().map { it.toBool() }
     actual fun toLongList() = toList().map { it.toLong() }
@@ -56,7 +58,7 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
 
     actual companion object {
         actual fun optionalNull(): IValue {
-            TODO("Not yet implemented")
+            return IValue(IValueWrapper())
         }
 
         actual fun from(tensor: Tensor): IValue {
@@ -79,18 +81,25 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
             return IValue(IValueWrapper(value))
         }
 
+        actual fun tupleFrom(vararg values: IValue): IValue {
+            val nativeIValues = values.map { it.nativeIValue }
+            return IValue(IValueWrapper(tuple = nativeIValues))
+        }
+
         actual fun listFrom(vararg values: IValue): IValue {
-            TODO("Not yet implemented")
+            val nativeIValues = values.map { it.nativeIValue }
+            return IValue(IValueWrapper(list = nativeIValues))
         }
 
         actual fun listFrom(vararg tensors: Tensor): IValue {
-            TODO("Not yet implemented")
+            val nativeTensors = tensors.map { it.nativeTensor }
+            return IValue(IValueWrapper(tensors = nativeTensors))
         }
 
         actual fun listFrom(vararg list: Boolean, scope: PLMScope): IValue = with(scope.nativePlacement) {
             IValue(
                 IValueWrapper(
-                    allocArray<BooleanVar>(list.size) { list[it] },
+                    allocArray<BooleanVar>(list.size) { value = list[it] },
                     list.size.toULong()
                 )
             )
@@ -99,7 +108,7 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
         actual fun listFrom(vararg list: Long, scope: PLMScope): IValue = with(scope.nativePlacement) {
             IValue(
                 IValueWrapper(
-                    allocArray<LongVar>(list.size) { list[it] },
+                    allocArray<LongVar>(list.size) { value = list[it] },
                     list.size.toULong()
                 )
             )
@@ -108,18 +117,14 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
         actual fun listFrom(vararg list: Double, scope: PLMScope): IValue = with(scope.nativePlacement) {
             IValue(
                 IValueWrapper(
-                    allocArray<DoubleVar>(list.size) { list[it] },
+                    allocArray<DoubleVar>(list.size) { value = list[it] },
                     list.size.toULong()
                 )
             )
         }
 
-        actual fun tupleFrom(vararg values: IValue): IValue {
-            TODO("Not yet implemented")
-        }
-
         actual fun dictStringKeyFrom(map: Map<String, IValue>): IValue {
-            TODO("Not yet implemented")
+            TODO()
         }
 
         actual fun dictLongKeyFrom(map: Map<Long, IValue>): IValue {

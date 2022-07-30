@@ -54,6 +54,81 @@ class TorchModuleIOSTest {
     }
 
     @Test
+    fun testTensorWrapperLong() {
+        plmScoped {
+            val data = longArrayOf(3L, 2L, 0L, 0L, 1L, 6L)
+            val shape = longArrayOf(2, 3)
+            val tensor = Tensor.fromBlob(data, shape, this)
+            assertEquals(data.toList(), tensor.getDataAsLongArray().toList())
+            assertEquals(shape.toList(), tensor.shape().toList())
+        }
+    }
+
+    @Test
+    fun testIValueWrapperList() {
+        plmScoped {
+            val a = IValue.from(1L)
+            val b = IValue.from(2L)
+            val wrapped = IValue.listFrom(a, b)
+            val asList = wrapped.toList().map { it.toLong() }
+            assertEquals(asList.first(), 1L)
+            assertEquals(asList.last(), 2L)
+        }
+    }
+
+    @Test
+    fun testIValueWrapperTensors() {
+        plmScoped {
+            val a = longArrayOf(3L, 2L, 0L, 0L, 1L, 6L)
+            val aShape = longArrayOf(2, 3)
+            val b = longArrayOf(3L, 2L, 0L)
+            val bShape = longArrayOf(3)
+            val l = IValue.listFrom(
+                Tensor.fromBlob(a, aShape, this),
+                Tensor.fromBlob(b, bShape, this)
+            )
+            val asList = l.toList().map { it.toTensor().getDataAsLongArray() }
+            assertEquals(asList.first().toList(), a.toList())
+            assertEquals(asList.last().toList(), b.toList())
+        }
+    }
+
+    @Test
+    fun testIValueNull() {
+        plmScoped {
+            val a = IValue.optionalNull()
+            val b = IValue.from(0.0)
+            assertTrue(a.isNull())
+            assertTrue(!b.isNull())
+        }
+    }
+
+    /*
+    @Test
+    fun testIValueWrapperListWrongTypes() {
+        plmScoped {
+            val a = IValue.from(1L)
+            val b = IValue.from(0.0)
+            assertFailsWith<IllegalArgumentException> {
+                IValue.listFrom(a, b)
+            }
+        }
+    }
+     */
+
+    @Test
+    fun testIValueWrapperTuple() {
+        plmScoped {
+            val a = IValue.from(1L)
+            val b = IValue.from(0.123)
+            val wrapped = IValue.tupleFrom(a, b)
+            val asList = wrapped.toTuple()
+            assertEquals(asList.first().toLong(), 1L)
+            assertEquals(asList.last().toDouble(), 0.123)
+        }
+    }
+
+    @Test
     fun testIdentityLong() {
         plmScoped {
             val module = TorchModule(localModulePath)
@@ -116,24 +191,28 @@ class TorchModuleIOSTest {
         }
     }
 
-    /*
+        /*
     @Test
     fun itCanRunMethodWithDictInput() {
-        val module = TorchModule(localModulePath)
-        val input = IValue.dictStringKeyFrom(
-            mapOf(
-                "x" to IValue.from(
-                    Tensor.fromBlob(
-                        FloatArray(10) { 0.0F },
-                        longArrayOf(1, 10),
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.dictStringKeyFrom(
+                mapOf(
+                    "x" to IValue.from(
+                        Tensor.fromBlob(
+                            FloatArray(10) { 0.0F },
+                            longArrayOf(1, 10),
+                            this,
+                        )
                     )
                 )
             )
-        )
-        val output = module.runMethod("inference_dict", input)
-        val outputTensor = output.toTensor()
-        assertEquals(10, outputTensor.getDataAsFloatArray().size)
-        assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
+            val output = module.runMethod("inference_dict", input)
+            val outputTensor = output.toTensor()
+            assertEquals(10, outputTensor.getDataAsFloatArray().size)
+            assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
+        }
     }
-    */
+
+         */
 }

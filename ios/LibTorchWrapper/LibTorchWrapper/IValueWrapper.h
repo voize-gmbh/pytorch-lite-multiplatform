@@ -6,6 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface IValueWrapper : NSObject
 
+- (nullable instancetype)init;
 - (nullable instancetype)initWithNativeIValue:(void*)nativeIValue;
 - (nullable instancetype)initWithTensor:(Tensor*)tensor;
 - (nullable instancetype)initWithBoolean:(bool)value;
@@ -16,6 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable instancetype)initWithDoubleList:(double*)data length:(size_t)length;
 - (nullable instancetype)initWithFloatList:(float*)data length:(size_t)length;
 - (nullable instancetype)initWithLongList:(int64_t*)data length:(size_t)length;
+- (nullable instancetype)initWithTuple:(NSArray<IValueWrapper*>*)nativeIValues;
+- (nullable instancetype)initWithList:(NSArray<IValueWrapper*>*)nativeIValues;
+- (nullable instancetype)initWithTensors:(NSArray<Tensor*>*)tensors;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
@@ -25,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (int64_t)toInt;
 - (double)toDouble;
 - (NSArray<IValueWrapper*>*)toList;
+- (NSArray<IValueWrapper*>*)toTuple;
 
 - (bool)isNone;
 - (bool)isTensor;

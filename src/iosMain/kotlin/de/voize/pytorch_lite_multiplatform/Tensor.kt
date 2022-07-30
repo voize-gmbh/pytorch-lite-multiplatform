@@ -39,8 +39,8 @@ actual class Tensor internal constructor(val nativeTensor: NativeTensor) {
             scope: PLMScope,
         ): Tensor = with(scope.nativePlacement) {
             val nativeTensor = NativeTensor(
-                intData = allocArray(data.size) { data[it] },
-                shape = allocArray(shape.size) { shape[it] },
+                intData = allocArray(data.size) { value = data[it] },
+                shape = allocArray(shape.size) { value = shape[it] },
                 shapeLength = shape.size.toULong()
             )
             Tensor(nativeTensor)
@@ -52,8 +52,8 @@ actual class Tensor internal constructor(val nativeTensor: NativeTensor) {
             scope: PLMScope,
         ): Tensor = with(scope.nativePlacement) {
             val nativeTensor = NativeTensor(
-                floatData = allocArray(data.size) { data[it] },
-                shape = allocArray(shape.size) { shape[it] },
+                floatData = allocArray(data.size) { value = data[it] },
+                shape = allocArray(shape.size) { value = shape[it] },
                 shapeLength = shape.size.toULong()
             )
             Tensor(nativeTensor)
@@ -65,8 +65,8 @@ actual class Tensor internal constructor(val nativeTensor: NativeTensor) {
             scope: PLMScope,
         ): Tensor = with(scope.nativePlacement) {
             val nativeTensor = NativeTensor(
-                longData = allocArray(data.size) { data[it] },
-                shape = allocArray(shape.size) { shape[it] },
+                longData = allocArray(data.size) { value = data[it] },
+                shape = allocArray(shape.size) { value = shape[it] },
                 shapeLength = shape.size.toULong()
             )
             Tensor(nativeTensor)
@@ -78,8 +78,8 @@ actual class Tensor internal constructor(val nativeTensor: NativeTensor) {
             scope: PLMScope,
         ): Tensor = with(scope.nativePlacement) {
             val nativeTensor = NativeTensor(
-                doubleData = allocArray(data.size) { data[it] },
-                shape = allocArray(shape.size) { shape[it] },
+                doubleData = allocArray(data.size) { value = data[it] },
+                shape = allocArray(shape.size) { value = shape[it] },
                 shapeLength = shape.size.toULong()
             )
             Tensor(nativeTensor)
