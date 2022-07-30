@@ -7,6 +7,14 @@
     at::IValue _iValue;
 }
 
+- (nullable instancetype)init {
+    self = [super init];
+    if (self) {
+        _iValue = at::IValue();
+    }
+    return self;
+}
+
 - (nullable instancetype)initWithNativeIValue:(void*)nativeIValue {
     self = [super init];
     if (self) {
@@ -81,6 +89,50 @@
     return self;
 }
 
+- (nullable instancetype)initWithTuple:(NSArray<IValueWrapper*>*)nativeIValues {
+    self = [super init];
+    if (self) {
+        std::vector<at::IValue> vector;
+        for (IValueWrapper* nativeIValue in nativeIValues) {
+             vector.push_back(nativeIValue->_iValue);
+        }
+        _iValue = at::IValue(c10::ivalue::Tuple::create(vector));
+    }
+    return self;
+}
+
+- (nullable instancetype)initWithList:(NSArray<IValueWrapper*>*)nativeIValues {
+    self = [super init];
+    if (self) {
+        c10::TypePtr type = c10::NoneType::get();
+        if (nativeIValues.count > 0) {
+            type = nativeIValues[0]->_iValue.type();
+        }
+
+        c10::impl::GenericList list(type);
+        for (IValueWrapper* nativeIValue in nativeIValues) {
+            list.push_back(nativeIValue->_iValue);
+        }
+        _iValue = at::IValue(list);
+    }
+    return self;
+}
+
+- (nullable instancetype)initWithTensors:(NSArray<Tensor*>*) tensors {
+    self = [super init];
+    if (self) {
+        c10::TypePtr type = c10::TensorType::get();
+        c10::impl::GenericList list(type);
+        for (Tensor* tensor in tensors) {
+            list.push_back(*((at::Tensor*) (tensor.getTensor)));
+        }
+        _iValue = at::IValue(list);
+    }
+    return self;
+}
+
+
+
 - (Tensor*)toTensor {
     return [[Tensor alloc] initWithTensor: &_iValue.toTensor()];
 }
@@ -88,6 +140,18 @@
 - (bool)toBool { return _iValue.toBool(); }
 - (int64_t)toInt { return _iValue.toInt(); }
 - (double)toDouble { return _iValue.toDouble(); }
+
+- (NSArray<IValueWrapper*>*)toTuple {
+    c10::intrusive_ptr<c10::ivalue::Tuple> iValueList = _iValue.toTuple();
+    NSMutableArray* data = [NSMutableArray array];
+    std::vector<at::IValue> elements = iValueList->elements();
+    for (int i = 0; i < elements.size(); i++) {
+        at::IValue iValue = elements[i];
+        IValueWrapper *wrapper = [[IValueWrapper alloc] initWithNativeIValue: &iValue];
+        [data addObject: wrapper];
+    }
+    return data;
+}
 
 - (NSArray<IValueWrapper*>*)toList {
     c10::List<at::IValue> iValueList = _iValue.toList();
