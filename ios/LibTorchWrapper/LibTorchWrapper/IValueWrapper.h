@@ -20,16 +20,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable instancetype)initWithTuple:(NSArray<IValueWrapper*>*)nativeIValues;
 - (nullable instancetype)initWithList:(NSArray<IValueWrapper*>*)nativeIValues;
 - (nullable instancetype)initWithTensors:(NSArray<Tensor*>*)tensors;
+- (nullable instancetype)initWithDictStringKey:(NSDictionary<NSString*, IValueWrapper*>*)dict;
+- (nullable instancetype)initWithDictLongKey:(NSDictionary<NSNumber*, IValueWrapper*>*)dict;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
+- (NSString*)toStr;
 - (Tensor*)toTensor;
 - (bool)toBool;
 - (int64_t)toInt;
 - (double)toDouble;
 - (NSArray<IValueWrapper*>*)toList;
 - (NSArray<IValueWrapper*>*)toTuple;
+- (NSDictionary*)toDictStringKey;
+- (NSDictionary*)toDictLongKey;
 
 - (bool)isNone;
 - (bool)isTensor;
@@ -43,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (bool)isDoubleList;
 - (bool)isTensorList;
 - (bool)isList;
+- (bool)isDictStringKey;
+- (bool)isDictLongKey;
 
 - (void*)getIValue;
 

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Tuple
 
 import torch
 import torch.nn as nn
@@ -14,11 +14,39 @@ class DummyModel(nn.Module):
         return self.linear(x)
 
     @torch.jit.export
-    def inference_dict(self, x: Dict[str, torch.Tensor]):
+    def inference_dict_string(self, x: Dict[str, torch.Tensor]):
         return self.linear(x["x"])
 
     @torch.jit.export
-    def identity(self, x: torch.Tensor):
+    def inference_dict_long(self, x: Dict[int, torch.Tensor]):
+        return self.linear(x[0])
+
+    @torch.jit.export
+    def identity_tensor(self, x: torch.Tensor):
+        return x
+
+    @torch.jit.export
+    def identity_long(self, x: int):
+        return x
+
+    @torch.jit.export
+    def identity_list(self, x: List[int]):
+        return x
+
+    @torch.jit.export
+    def identity_tuple(self, x: Tuple[int]):
+        return x
+
+    @torch.jit.export
+    def identity_dict_string(self, x: Dict[str, int]):
+        return x
+
+    @torch.jit.export
+    def identity_dict_long(self, x: Dict[int, int]):
+        return x
+
+    @torch.jit.export
+    def identity_string(self, x: str):
         return x
 
     @torch.jit.export

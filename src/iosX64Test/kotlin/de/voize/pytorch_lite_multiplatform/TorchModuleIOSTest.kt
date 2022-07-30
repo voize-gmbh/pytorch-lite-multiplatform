@@ -1,8 +1,8 @@
 package de.voize.pytorch_lite_multiplatform
 
 import com.suparnatural.core.fs.FileSystem
-import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 import kotlin.test.*
+import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
 class TorchModuleIOSTest {
     private val contentsDir = FileSystem.contentsDirectory.absolutePath
@@ -103,6 +103,51 @@ class TorchModuleIOSTest {
         }
     }
 
+    @Test
+    fun testIValueString() {
+        plmScoped {
+            val a = IValue.from("test")
+            assertEquals("test", a.toStr())
+        }
+    }
+
+    @Test
+    fun testIValueStringIdentity() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val a = IValue.from("test")
+            val output = module.runMethod("identity_string", a)
+            assertEquals("test", output.toStr())
+        }
+    }
+
+    @Test
+    fun testIValueDictionaries() {
+        plmScoped {
+            val a = IValue.dictStringKeyFrom(mapOf("test" to IValue.from(1L)))
+            assertEquals(1L, a.toDictStringKey()["test"]?.toLong())
+            val b = IValue.dictLongKeyFrom(mapOf(0L to IValue.from(2L)))
+            assertEquals(2L, b.toDictLongKey()[0L]?.toLong())
+        }
+    }
+
+    @Test
+    fun testIValueDictionariesIdentity() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.dictLongKeyFrom(
+                mapOf(
+                    0L to IValue.from(7L),
+                )
+            )
+            val output = module.runMethod(
+                "identity_dict_long",
+                input
+            )
+            assertEquals(7L, output.toDictLongKey()[0L]?.toLong())
+        }
+    }
+
     /*
     @Test
     fun testIValueWrapperListWrongTypes() {
@@ -132,28 +177,24 @@ class TorchModuleIOSTest {
     fun testIdentityLong() {
         plmScoped {
             val module = TorchModule(localModulePath)
-            val data = longArrayOf(3L, 2L, 0L, 0L, 1L, 6L)
-            val shape = longArrayOf(2, 3)
-            val tensor = Tensor.fromBlob(data, shape, this)
+            val input = IValue.from(0L)
             val output = module.runMethod(
-                "identity",
-                IValue.from(tensor)
+                "identity_long",
+                input
             )
-            val outputTensor = output.toTensor()
-            assertEquals(data.toList(), outputTensor.getDataAsLongArray().toList())
-            assertEquals(shape.toList(), outputTensor.shape().toList())
+            assertEquals(0L, output.toLong())
         }
     }
 
     @Test
-    fun testIdentity() {
+    fun testIdentityTensor() {
         plmScoped {
             val module = TorchModule(localModulePath)
             val data = floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F)
             val shape = longArrayOf(2, 3)
             val tensor = Tensor.fromBlob(data, shape, this)
             val output = module.runMethod(
-                "identity",
+                "identity_tensor",
                 IValue.from(tensor)
             )
             val outputTensor = output.toTensor()
@@ -191,9 +232,8 @@ class TorchModuleIOSTest {
         }
     }
 
-        /*
     @Test
-    fun itCanRunMethodWithDictInput() {
+    fun itCanRunMethodWithStringDictInput() {
         plmScoped {
             val module = TorchModule(localModulePath)
             val input = IValue.dictStringKeyFrom(
@@ -207,12 +247,32 @@ class TorchModuleIOSTest {
                     )
                 )
             )
-            val output = module.runMethod("inference_dict", input)
+            val output = module.runMethod("inference_dict_string", input)
             val outputTensor = output.toTensor()
             assertEquals(10, outputTensor.getDataAsFloatArray().size)
             assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
         }
     }
 
-         */
+    @Test
+    fun itCanRunMethodWithLongDictInput() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.dictLongKeyFrom(
+                mapOf(
+                    0L to IValue.from(
+                        Tensor.fromBlob(
+                            FloatArray(10) { 0.0F },
+                            longArrayOf(1, 10),
+                            this,
+                        )
+                    )
+                )
+            )
+            val output = module.runMethod("inference_dict_long", input)
+            val outputTensor = output.toTensor()
+            assertEquals(10, outputTensor.getDataAsFloatArray().size)
+            assertContentEquals(longArrayOf(1, 10), outputTensor.shape())
+        }
+    }
 }

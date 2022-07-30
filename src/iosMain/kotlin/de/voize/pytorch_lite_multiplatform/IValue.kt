@@ -16,24 +16,15 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
     actual fun isDoubleList() = nativeIValue.isDoubleList()
     actual fun isTensorList() = nativeIValue.isTensorList()
     actual fun isList() = nativeIValue.isList()
-
-    actual fun isDictStringKey(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    actual fun isDictLongKey(): Boolean {
-        TODO("Not yet implemented")
-    }
+    actual fun isDictStringKey() = nativeIValue.isDictStringKey()
+    actual fun isDictLongKey() = nativeIValue.isDictLongKey()
 
     actual fun toTensor() = Tensor(nativeIValue.toTensor())
 
     actual fun toBool() = nativeIValue.toBool()
     actual fun toLong() = nativeIValue.toInt()
     actual fun toDouble() = nativeIValue.toDouble()
-
-    actual fun toStr(): String {
-        TODO("Not yet implemented")
-    }
+    actual fun toStr() = nativeIValue.toStr()
 
     actual fun toList(): List<IValue> {
         return (nativeIValue.toList() as List<IValueWrapper>).map { IValue(it) }
@@ -49,11 +40,11 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
     actual fun toTensorList() = toList().map { it.toTensor() }
 
     actual fun toDictStringKey(): Map<String, IValue> {
-        TODO("Not yet implemented")
+        return (nativeIValue.toDictStringKey() as Map<String, IValueWrapper>).mapValues { IValue(it.value) }
     }
 
     actual fun toDictLongKey(): Map<Long, IValue> {
-        TODO("Not yet implemented")
+        return (nativeIValue.toDictLongKey() as Map<Long, IValueWrapper>).mapValues { IValue(it.value) }
     }
 
     actual companion object {
@@ -124,11 +115,13 @@ actual class IValue internal constructor(val nativeIValue: IValueWrapper) {
         }
 
         actual fun dictStringKeyFrom(map: Map<String, IValue>): IValue {
-            TODO()
+            val nativeIValues = map.mapValues { it.value.nativeIValue }
+            return IValue(IValueWrapper(dictStringKey = nativeIValues as Map<Any?, *>))
         }
 
         actual fun dictLongKeyFrom(map: Map<Long, IValue>): IValue {
-            TODO("Not yet implemented")
+            val nativeIValues = map.mapValues { it.value.nativeIValue }
+            return IValue(IValueWrapper(dictLongKey = nativeIValues as Map<Any?, *>))
         }
     }
 }

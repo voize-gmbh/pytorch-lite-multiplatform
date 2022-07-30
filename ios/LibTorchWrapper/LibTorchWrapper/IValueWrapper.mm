@@ -131,7 +131,47 @@
     return self;
 }
 
+- (nullable instancetype)initWithDictStringKey:(NSDictionary<NSString*, IValueWrapper*>*)dict {
+    self = [super init];
+    if (self) {
+        auto values = [dict allValues];
+        if ([values count] > 0) {
+            auto firstEntryType = [values objectAtIndex:0]->_iValue.type();
+            c10::impl::GenericDict genericDict{c10::StringType::get(), c10::unshapedType(firstEntryType)};
+            for(id key in dict) {
+                auto unwrappedKey = (char*)[key UTF8String];
+                genericDict.insert(at::IValue(unwrappedKey), [dict objectForKey:key]->_iValue);
+            }
+            _iValue = at::IValue(genericDict);
+        } else {
+            _iValue = at::IValue{c10::impl::GenericDict(c10::StringType::get(), c10::TensorType::get())};
+        }
+    }
+    return self;
+}
 
+- (nullable instancetype)initWithDictLongKey:(NSDictionary<NSNumber*, IValueWrapper*>*)dict {
+    self = [super init];
+    if (self) {
+        auto values = [dict allValues];
+        if ([values count] > 0) {
+            auto firstEntryType = [values objectAtIndex:0]->_iValue.type();
+            c10::impl::GenericDict genericDict{c10::IntType::get(), c10::unshapedType(firstEntryType)};
+            for(id key in dict) {
+                auto unwrappedKey = [key intValue];
+                genericDict.insert(at::IValue(unwrappedKey), [dict objectForKey:key]->_iValue);
+            }
+            _iValue = at::IValue(genericDict);
+        } else {
+            _iValue = at::IValue{c10::impl::GenericDict(c10::IntType::get(), c10::TensorType::get())};
+        };
+    }
+    return self;
+}
+
+- (NSString*)toStr {
+    return [NSString stringWithCString:_iValue.toStringRef().c_str() encoding:[NSString defaultCStringEncoding]];
+}
 
 - (Tensor*)toTensor {
     return [[Tensor alloc] initWithTensor: &_iValue.toTensor()];
@@ -164,6 +204,28 @@
     return data;
 }
 
+- (NSDictionary*)toDictStringKey {
+    c10::Dict<at::IValue, at::IValue> iValueDict = _iValue.toGenericDict();
+    NSMutableDictionary* data = [NSMutableDictionary dictionary];
+    for (auto it = iValueDict.begin(); it != iValueDict.end(); it++) {
+        NSString* key = [NSString stringWithCString:it->key().toStringRef().c_str() encoding:[NSString defaultCStringEncoding]];
+        IValueWrapper* wrapper = [[IValueWrapper alloc] initWithNativeIValue: (void *) &(it->value())];
+        [data setObject:wrapper forKey:key];
+    }
+    return data;
+}
+
+- (NSDictionary*)toDictLongKey {
+    c10::Dict<at::IValue, at::IValue> iValueDict = _iValue.toGenericDict();
+    NSMutableDictionary* data = [NSMutableDictionary dictionary];
+    for (auto it = iValueDict.begin(); it != iValueDict.end(); it++) {
+        NSNumber* key = [NSNumber numberWithLongLong:it->key().toInt()];
+        IValueWrapper* wrapper = [[IValueWrapper alloc] initWithNativeIValue: (void *) &(it->value())];
+        [data setObject:wrapper forKey:key];
+    }
+    return data;
+}
+
 - (bool)isNone { return _iValue.isNone(); }
 - (bool)isTensor { return _iValue.isTensor(); }
 - (bool)isBool { return _iValue.isBool(); }
@@ -176,6 +238,9 @@
 - (bool)isDoubleList { return _iValue.isDoubleList(); }
 - (bool)isTensorList { return _iValue.isTensorList(); }
 - (bool)isList { return _iValue.isList(); }
+// TODO: check for specific key type here
+- (bool)isDictStringKey { return _iValue.isGenericDict(); }
+- (bool)isDictLongKey { return _iValue.isGenericDict(); }
 
 - (void*)getIValue {
     return &self->_iValue;
