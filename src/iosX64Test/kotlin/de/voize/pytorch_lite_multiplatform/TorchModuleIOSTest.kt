@@ -106,8 +106,9 @@ class TorchModuleIOSTest {
     @Test
     fun testIValueString() {
         plmScoped {
-            val a = IValue.from("test")
-            assertEquals("test", a.toStr())
+            val greeting = "hello world from pytorch-lite-multiplatform with▁unicode"
+            val a = IValue.from(greeting)
+            assertEquals(greeting, a.toStr())
         }
     }
 
@@ -124,8 +125,9 @@ class TorchModuleIOSTest {
     @Test
     fun testIValueDictionaries() {
         plmScoped {
-            val a = IValue.dictStringKeyFrom(mapOf("test" to IValue.from(1L)))
-            assertEquals(1L, a.toDictStringKey()["test"]?.toLong())
+            val greeting = "hello world from pytorch-lite-multiplatform"
+            val a = IValue.dictStringKeyFrom(mapOf(greeting to IValue.from(1L)))
+            assertEquals(1L, a.toDictStringKey()[greeting]?.toLong())
             val b = IValue.dictLongKeyFrom(mapOf(0L to IValue.from(2L)))
             assertEquals(2L, b.toDictLongKey()[0L]?.toLong())
         }

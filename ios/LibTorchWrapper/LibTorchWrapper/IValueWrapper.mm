@@ -49,7 +49,7 @@
 
 - (nullable instancetype)initWithString:(NSString*)value {
     self = [super init];
-    if (self) { _iValue = at::IValue{(char*)[value UTF8String]}; }
+    if (self) { _iValue = at::IValue{std::string([value UTF8String])}; }
     return self;
 }
 
@@ -170,7 +170,7 @@
 }
 
 - (NSString*)toStr {
-    return [NSString stringWithCString:_iValue.toStringRef().c_str() encoding:[NSString defaultCStringEncoding]];
+    return [NSString stringWithUTF8String:_iValue.toStringRef().c_str()];
 }
 
 - (Tensor*)toTensor {
