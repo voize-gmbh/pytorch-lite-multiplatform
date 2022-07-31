@@ -3,7 +3,7 @@
 ![CI](https://github.com/voize-gmbh/pytorch-lite-multiplatform/actions/workflows/test.yml/badge.svg)
 
 A Kotlin multi-platform wrapper around the PyTorch Lite libraries on [Android](https://pytorch.org/mobile/android/) and [iOS](https://pytorch.org/mobile/ios/).
-You can use this library in your Kotlin multi-platform project to write mobile inference code for PyTorch Lite models.
+You can use this library in your Kotlin multi-platform project to write mobile inference code for PyTorch Lite models. The API is very close to the Android API of PyTorch Lite.
 
 ## Installation
 
@@ -59,42 +59,36 @@ val module = TorchModule(path = "<path/to/model.ptl>")
 
 Once you initialized the model you are ready to run inference.
 
-To setup the input tensors for your model use the `FloatTensor` and `LongTensor` classes.
+Just like in the Android API of PyTorch Lite, you can use `IValue` and `Tensor` to pass input data into your model and to process the model output. To manage the memory allocated for your tensors you need to use `plmScoped` to specify up to which point you need to keep the memory allocated.
 
 ```kotlin
-import de.voize.pytorch_lite_multiplatform.Tensor
+import de.voize.pytorch_lite_multiplatform.*
 
-val inputTensor = FloatTensor(
-    data = floatArrayOf(...),
-    shape = longArrayOf(...),
-)
+plmScoped {
+    val inputTensor = Tensor.fromBlob(
+        data = floatArrayOf(...),
+        shape = longArrayOf(...),
+        scope = this
+    )
+
+    val inputIValue = IValue.fromTensor(inputTensor)
+
+    val output = module.forward(inputIValue)
+    // you could also use
+    // module.runMethod("forward", inputIValue)
+
+    val outputTensor = output.toTensor()
+    val outputData = outputTensor.getDataAsFloatArray()
+
+    ...
+}
 ```
 
-Now you can run inference either via `module.forward` or `module.runMethod`.
+`IValue`s are very flexible to construct the input you need for your model, e.g. tensors, scalars, flags, dicts, tuples etc. Refer to the [`IValue`]() interface for all available options and browse [PyTorch's Android Demo](https://github.com/pytorch/android-demo-app) for examples on inferences using `IValue`.
 
-```kotlin
-val output = module.forward(listOf(inputTensor))
-```
+## Memory Management
 
-```kotlin
-val output = module.runMethod("mymethod", listOf(inputTensor))
-```
-
-The list of given input tensors will be flattened to your module's method arguments.
-
-If your inference method requires a dictionary as input you can use
-
-```kotlin
-val output = module.forward(mapOf("x" to inputTensor))
-```
-
-The return type of your inference is `ModelOutput` which contains the flat `data` (`FloatArray`) and `shape` (`LongArray`) property.
-
-### Current inference limitations
-
-- the input to your inference method can either be a list of plain tensors (is flatted to arguments) or dictionary with string keys and tensor values
-- only float and long tensors are supported
-- the return type of your model's `forward` must be a plain tensor of data type float
+To make management of resources allocated for your inference across Android and iOS simpler we introduced the `PLMScope` and the `plmScoped` util. On Android, the JVM garbage collection and PyTorch Lite manage the allocated memory nicely so `plmScoped` is a noop. But on iOS, memory is allocated in Kotlin and exchanged with native Objective-C code and vice-versa without automatic deallocation of resources. This is where `plmScoped` comes in and frees the memory allocated for your inference. So it is important that you properly define the scope in which resources need to stay allocated to avoid memory leaks or memory being lost that is needed later.
 
 ## Running tests
 
