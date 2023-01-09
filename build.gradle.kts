@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin("multiplatform") version "1.7.0"
-    kotlin("native.cocoapods") version "1.7.0"
+    kotlin("multiplatform") version "1.8.0"
+    kotlin("native.cocoapods") version "1.8.0"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("convention.publication")
@@ -48,6 +48,7 @@ kotlin {
 
         pod("PLMLibTorchWrapper") {
             version = "0.5.0"
+            headers = "LibTorchWrapper.h"
             source = path(project.file("ios/LibTorchWrapper"))
         }
 
@@ -76,22 +77,21 @@ kotlin {
     }
 }
 
-tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefPLMLibTorchWrapper").configure {
-    doLast {
-        outputFile.writeText("""
-            language = Objective-C
-            headers = LibTorchWrapper.h
-        """.trimIndent())
+fun createFrameworkFromStaticLib(platform: String) {
+    val basePath = project.file("build/cocoapods/synthetic/IOS/build/Release-$platform/PLMLibTorchWrapper")
+    val frameworkPath = basePath.resolve("PLMLibTorchWrapper.framework")
+    frameworkPath.mkdir()
+    val frameworkLibPath = frameworkPath.resolve("PLMLibTorchWrapper")
+    basePath.resolve("libPLMLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
+}
+tasks.named("linkPodDebugFrameworkIosArm64").configure {
+    doFirst {
+        createFrameworkFromStaticLib("iphoneos")
     }
 }
-
-tasks.named("linkDebugTestIosX64").configure {
+tasks.named("linkPodDebugFrameworkIosX64").configure {
     doFirst {
-        val basePath = project.file("build/cocoapods/synthetic/IOS/build/Release-iphonesimulator/PLMLibTorchWrapper")
-        val frameworkPath = basePath.resolve("PLMLibTorchWrapper.framework")
-        frameworkPath.mkdir()
-        val frameworkLibPath = frameworkPath.resolve("PLMLibTorchWrapper")
-        basePath.resolve("libPLMLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
+        createFrameworkFromStaticLib("iphonesimulator")
     }
 }
 
