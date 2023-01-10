@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "de.voize"
-version = "0.5.0"
+version = "0.5.1"
 
 repositories {
     google()
@@ -47,7 +47,7 @@ kotlin {
         summary = "Kotlin Multiplatform wrapper for PyTorch Lite"
 
         pod("PLMLibTorchWrapper") {
-            version = "0.5.0"
+            version = "0.5.1"
             headers = "LibTorchWrapper.h"
             source = path(project.file("ios/LibTorchWrapper"))
         }
