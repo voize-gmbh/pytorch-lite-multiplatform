@@ -35,7 +35,6 @@ kotlin {
                 *libs.map { "-l$it" }.toTypedArray(),
                 "-force_load", libTorchLibsDir.resolve("libtorch.a").absolutePath,
                 "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
-                "-all_load"
             )
         }
     }
