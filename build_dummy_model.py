@@ -30,7 +30,15 @@ class DummyModel(nn.Module):
         return x
 
     @torch.jit.export
+    def identity_bool(self, x: bool):
+        return x
+
+    @torch.jit.export
     def identity_list(self, x: List[int]):
+        return x
+
+    @torch.jit.export
+    def identity_bool_list(self, x: List[bool]):
         return x
 
     @torch.jit.export
