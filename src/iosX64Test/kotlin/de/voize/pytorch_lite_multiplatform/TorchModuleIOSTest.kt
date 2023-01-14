@@ -189,6 +189,52 @@ class TorchModuleIOSTest {
     }
 
     @Test
+    fun testIdentityBool() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.from(false)
+            val output = module.runMethod(
+                "identity_bool",
+                input
+            )
+            assertEquals(false, output.toBool())
+
+            val input2 = IValue.from(true)
+            val output2 = module.runMethod(
+                "identity_bool",
+                input2
+            )
+            assertEquals(true, output2.toBool())
+        }
+    }
+
+    @Test
+    fun testIdentityBoolList() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.listFrom(IValue.from(true), IValue.from(false))
+            val output = module.runMethod(
+                "identity_bool_list",
+                input
+            )
+            assertEquals(listOf(true, false), output.toBoolList())
+        }
+    }
+
+    @Test
+    fun testIdentityBoolList2() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+            val input = IValue.listFrom(true, false, scope = this)
+            val output = module.runMethod(
+                "identity_bool_list",
+                input
+            )
+            assertEquals(listOf(true, false), output.toBoolList())
+        }
+    }
+
+    @Test
     fun testIdentityTensor() {
         plmScoped {
             val module = TorchModule(localModulePath)
