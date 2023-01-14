@@ -21,30 +21,17 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    ios {
-        val libTorchPodDir = project.file("build/cocoapods/synthetic/IOS/Pods/LibTorch-Lite")
-        val libTorchLibsDir = libTorchPodDir.resolve("install/lib")
-        val libs = listOf(
-            "c10", "torch", "torch_cpu", "XNNPACK", "clog",
-            "cpuinfo", "eigen_blas", "pthreadpool", "pytorch_qnnpack"
-        )
-
-        binaries.all {
-            linkerOpts(
-                "-L${libTorchLibsDir.absolutePath}",
-                *libs.map { "-l$it" }.toTypedArray(),
-                "-force_load", libTorchLibsDir.resolve("libtorch.a").absolutePath,
-                "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
-                "-all_load"
-            )
-        }
-    }
+    ios()
 
     cocoapods {
         ios.deploymentTarget = "13.5"
 
         homepage = "https://github.com/voize-gmbh/pytorch-lite-multiplatform"
         summary = "Kotlin Multiplatform wrapper for PyTorch Lite"
+
+        framework {
+            isStatic = true
+        }
 
         pod("PLMLibTorchWrapper") {
             version = "0.5.1"
@@ -77,21 +64,27 @@ kotlin {
     }
 }
 
-fun createFrameworkFromStaticLib(platform: String) {
-    val basePath = project.file("build/cocoapods/synthetic/IOS/build/Release-$platform/PLMLibTorchWrapper")
-    val frameworkPath = basePath.resolve("PLMLibTorchWrapper.framework")
-    frameworkPath.mkdir()
-    val frameworkLibPath = frameworkPath.resolve("PLMLibTorchWrapper")
-    basePath.resolve("libPLMLibTorchWrapper.a").copyTo(frameworkLibPath, overwrite = true)
-}
-tasks.named("linkPodDebugFrameworkIosArm64").configure {
+tasks.named("linkDebugTestIosX64").configure {
     doFirst {
-        createFrameworkFromStaticLib("iphoneos")
-    }
-}
-tasks.named("linkPodDebugFrameworkIosX64").configure {
-    doFirst {
-        createFrameworkFromStaticLib("iphonesimulator")
+        val target = (kotlin.targets.getByName("iosX64") as KotlinNativeTarget)
+
+        target.binaries.all {
+            val syntheticIOSProjectDir = project.file("build/cocoapods/synthetic/IOS")
+            val libTorchPodDir = syntheticIOSProjectDir.resolve("Pods/LibTorch-Lite")
+            val libTorchLibsDir = libTorchPodDir.resolve("install/lib")
+            val podBuildDir = syntheticIOSProjectDir.resolve("build/Release-iphonesimulator")
+
+            linkerOpts(
+                "-L${libTorchLibsDir.absolutePath}",
+                "-lc10", "-ltorch", "-ltorch_cpu", "-lXNNPACK",
+                "-lclog", "-lcpuinfo", "-leigen_blas", "-lpthreadpool", "-lpytorch_qnnpack",
+                "-force_load", libTorchLibsDir.resolve("libtorch.a").absolutePath,
+                "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
+                "-all_load",
+                "-L${podBuildDir.resolve("PLMLibTorchWrapper").absolutePath}",
+                "-lPLMLibTorchWrapper"
+            )
+        }
     }
 }
 
