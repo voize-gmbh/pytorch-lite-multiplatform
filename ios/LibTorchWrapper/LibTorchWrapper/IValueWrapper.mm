@@ -29,7 +29,7 @@
     return self;
 }
 
-- (nullable instancetype)initWithBoolean:(bool)value {
+- (nullable instancetype)initWithBool:(bool)value {
     self = [super init];
     if (self) { _iValue = at::IValue{value}; }
     return self;
@@ -53,7 +53,7 @@
     return self;
 }
 
-- (nullable instancetype)initWithBooleanList:(bool*)data length:(size_t)length {
+- (nullable instancetype)initWithBoolList:(bool*)data length:(size_t)length {
     self = [super init];
     if (self) {
         at::ArrayRef<bool> arr = at::ArrayRef<bool>(data, length);

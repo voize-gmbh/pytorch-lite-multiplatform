@@ -9,11 +9,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable instancetype)init;
 - (nullable instancetype)initWithNativeIValue:(void*)nativeIValue;
 - (nullable instancetype)initWithTensor:(Tensor*)tensor;
-- (nullable instancetype)initWithBoolean:(bool)value;
+- (nullable instancetype)initWithBool:(bool)value;
 - (nullable instancetype)initWithLong:(int64_t)value;
 - (nullable instancetype)initWithDouble:(double)value;
 - (nullable instancetype)initWithString:(NSString*)value;
-- (nullable instancetype)initWithBooleanList:(bool*)data length:(size_t)length;
+- (nullable instancetype)initWithBoolList:(bool*)data length:(size_t)length;
 - (nullable instancetype)initWithDoubleList:(double*)data length:(size_t)length;
 - (nullable instancetype)initWithFloatList:(float*)data length:(size_t)length;
 - (nullable instancetype)initWithLongList:(int64_t*)data length:(size_t)length;
