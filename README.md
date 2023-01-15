@@ -94,20 +94,13 @@ To make management of resources allocated for your inference across Android and 
 
 ## Running tests
 
-To run the tests, first create the dummy torchscript module using:
-
-```
-python build_dummy_model.py
-```
-
-Use a Python environment where the torch dependency is available.
-
-The tests will run inference against this module on iOS and Android using the multiplatform implementation.
-
 ### iOS
 
-Copy the created `dummy_model.ptl` into your simulator documents directory and run the iOS tests using
+To run the tests on iOS, execute the `iosSimulatorX64Test` gradle task:
 
 ```
 ./gradlew iosSimulatorX64Test
 ```
+
+This will automatically call `build_dummy_model.py` to create the dummy torchscript module for testing, copy it into the simulator files directory and execute the tests.
+Make sure to select a Python environment where the torch dependency is available.
