@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import java.io.ByteArrayOutputStream
 
 plugins {
     kotlin("multiplatform") version "1.8.0"
@@ -90,7 +91,6 @@ tasks.named("linkDebugTestIosX64").configure {
 
 // inspired by: https://diamantidis.github.io/2019/08/25/kotlin-multiplatform-project-unit-tests-for-ios-and-android
 task("iosSimulatorX64Test") {
-    val device = "iPhone 12"
     val target = (kotlin.targets.getByName("iosX64") as KotlinNativeTarget)
 
     dependsOn(target.binaries.getTest("DEBUG").linkTaskName)
@@ -98,10 +98,52 @@ task("iosSimulatorX64Test") {
     description = "Runs iOS tests on a simulator"
 
     doLast {
-        val binary = target.binaries.getTest("DEBUG").outputFile
-        println(binary)
+        println("Retrieving runtime for iOS simulator")
+        val iOSRuntimesOutput = ByteArrayOutputStream()
         exec {
-            commandLine("xcrun", "simctl", "spawn", "--standalone", device, binary.absolutePath)
+            commandLine("xcrun", "simctl", "list", "--json", "runtimes", "iOS")
+            standardOutput = iOSRuntimesOutput
+        }
+
+        val iOSRuntimesData = groovy.json.JsonSlurper().parseText(iOSRuntimesOutput.toString()) as Map<String, List<Map<String, Any>>>
+        val runtimesIdentifiers = iOSRuntimesData["runtimes"]!!.map { it["identifier"]!! } as List<String>
+        val latestRuntimeIdentifier = runtimesIdentifiers.maxOrNull()!!
+        println("Latest iOS runtime: $latestRuntimeIdentifier")
+
+        println("Retrieving device for iOS simulator")
+        val devicesOutput = ByteArrayOutputStream()
+        exec {
+            commandLine("xcrun", "simctl", "list", "--json", "devices")
+            standardOutput = devicesOutput
+        }
+        val devicesData = groovy.json.JsonSlurper().parseText(devicesOutput.toString()) as Map<String, Map<String, List<Map<String, String>>>>
+        val devices = devicesData["devices"]!!
+        val deviceName = "iPhone 12"
+        val device = devices[latestRuntimeIdentifier]!!.find { it["name"] == deviceName }
+        val udid = device!!["udid"]
+        println("Using device: $deviceName ($udid)")
+
+        exec {
+            println("Building test model")
+            commandLine("python3", "build_dummy_model.py")
+        }
+
+        val simulatorFilesPath = "/Users/${System.getProperty("user.name")}/Library/Developer/CoreSimulator/Devices/$udid/data/Documents"
+
+        exec {
+            println("Setting up iOS simulator documents directory")
+            commandLine("mkdir", "-p", simulatorFilesPath)
+        }
+
+        exec {
+            println("Copying model to iOS simulator files ($simulatorFilesPath)")
+            commandLine("cp", "dummy_module.ptl", simulatorFilesPath)
+        }
+
+        exec {
+            println("Running simulator tests")
+            val binary = target.binaries.getTest("DEBUG").outputFile
+            commandLine("xcrun", "simctl", "spawn", "--standalone", udid, binary.absolutePath)
         }
     }
 }
