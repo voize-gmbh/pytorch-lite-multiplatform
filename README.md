@@ -23,13 +23,14 @@ cocoapods {
 
     pod("PLMLibTorchWrapper") {
         version = "<version>"
+        headers = "LibTorchWrapper.h"
     }
 
     useLibraries()
 }
 ```
 
-Then, add the following to your `shared/build.gradle.kts` as a workaround until `PLMLibTorchWrapper` pod has a modulemap or [this issue](https://youtrack.jetbrains.com/issue/KT-44155/Cocoapods-doesnt-support-pods-without-module-map-file-inside) is resolved.
+If you use Kotlin version < 1.8.0 the `headers` property is not available. Instead, you have to add the following to your `shared/build.gradle.kts` (see [this issue](https://youtrack.jetbrains.com/issue/KT-44155/Cocoapods-doesnt-support-pods-without-module-map-file-inside)  for more information):
 
 ```kotlin
 tasks.named<org.jetbrains.kotlin.gradle.tasks.DefFileTask>("generateDefPLMLibTorchWrapper").configure {
@@ -46,6 +47,7 @@ Additional steps:
 
 - make sure bitcode is disabled in your iOS XCode project
 - make sure that your iOS app's Podfile does **not** include `use_frameworks!`
+- sure `framework` block should probably declare `isStatic = true`
 
 ## Usage
 
