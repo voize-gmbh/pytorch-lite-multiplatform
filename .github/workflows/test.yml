@@ -6,6 +6,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: pod spec lint PLMLibTorchWrapper.podspec --use-libraries --allow-warnings
+  test-ios-simulator-x64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - run: xcrun simctl list devices iOS
+      - run: python3 --version
+      - run: pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
+      - run: ./gradlew iosSimulatorX64Test
   build:
     runs-on: macos-latest
     steps:
