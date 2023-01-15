@@ -29,5 +29,4 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - run: gem install cocoapods-generate
       - run: ./gradlew build -x iosX64Test
