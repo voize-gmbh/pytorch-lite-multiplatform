@@ -47,7 +47,7 @@ Additional steps:
 
 - make sure bitcode is disabled in your iOS XCode project
 - make sure that your iOS app's Podfile does **not** include `use_frameworks!`
-- sure `framework` block should probably declare `isStatic = true`
+- your `framework` block should probably declare `isStatic = true`
 
 ## Usage
 
