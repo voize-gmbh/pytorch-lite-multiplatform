@@ -59,8 +59,10 @@ kotlin {
                 implementation("de.voize.pytorch:pytorch_android_lite:2.8.2")
             }
         }
-        val androidUnitTest by getting {
+        val androidInstrumentedTest by getting {
             dependencies {
+                implementation(kotlin("test"))
+                implementation("com.squareup.okio:okio:3.3.0")
                 implementation("junit:junit:4.13.2")
                 implementation("androidx.test:core:1.5.0")
                 implementation("androidx.test:rules:1.5.0")

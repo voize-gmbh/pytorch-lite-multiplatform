@@ -1,9 +1,9 @@
 package de.voize.pytorch_lite_multiplatform
 
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.suparnatural.core.fs.FileSystem
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.*
@@ -13,14 +13,16 @@ class TorchModuleAndroidTest {
     private val assetsManager = InstrumentationRegistry.getInstrumentation().context.assets
     private val moduleName = "dummy_module.ptl"
 
-    private val contentsDir = FileSystem.contentsDirectory.absolutePath
-    private val localModulePathComponent = contentsDir?.byAppending(moduleName)!!
-    private val localModulePath = localModulePathComponent.component!!
+    private val contentsDir = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+    private val localModulePath = "${contentsDir.absolutePath}/$moduleName"
 
     init {
         val inputStream = assetsManager.open(moduleName)
         val data = inputStream.readBytes()
-        val created = FileSystem.writeFile(localModulePathComponent, data, create = true)
+        val path = localModulePath.toPath()
+        FileSystem.SYSTEM.write(path) {
+            write(data)
+        }
         inputStream.close()
     }
 
@@ -102,7 +104,7 @@ class TorchModuleAndroidTest {
                 Tensor.fromBlob(a, aShape, this),
                 Tensor.fromBlob(b, bShape, this)
             )
-            val asList = l.toTensorList().map { it.getDataAsLongArray() }
+            val asList = l.toList().map { it.toTensor().getDataAsLongArray() }
             assertEquals(asList.first().toList(), a.toList())
             assertEquals(asList.last().toList(), b.toList())
         }
