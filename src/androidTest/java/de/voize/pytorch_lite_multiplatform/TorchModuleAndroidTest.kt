@@ -102,7 +102,7 @@ class TorchModuleAndroidTest {
                 Tensor.fromBlob(a, aShape, this),
                 Tensor.fromBlob(b, bShape, this)
             )
-            val asList = l.toTensorList().map { it.getDataAsLongArray() }
+            val asList = l.toList().map { it.toTensor().getDataAsLongArray() }
             assertEquals(asList.first().toList(), a.toList())
             assertEquals(asList.last().toList(), b.toList())
         }
