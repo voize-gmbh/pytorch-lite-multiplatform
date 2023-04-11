@@ -7,3 +7,4 @@ build/
 ios/LibTorchWrapper/LibTorchWrapper.xcworkspace/xcuserdata
 pytorch_lite_multiplatform.podspec
 bin/
+src/androidTest/assets/dummy_module.ptl
