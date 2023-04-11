@@ -1,6 +1,5 @@
 package de.voize.pytorch_lite_multiplatform
 
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.suparnatural.core.fs.FileSystem
@@ -102,7 +101,7 @@ class TorchModuleAndroidTest {
                 Tensor.fromBlob(a, aShape, this),
                 Tensor.fromBlob(b, bShape, this)
             )
-            val asList = l.toTensorList().map { it.getDataAsLongArray() }
+            val asList = l.toList().map { it.toTensor().getDataAsLongArray() }
             assertEquals(asList.first().toList(), a.toList())
             assertEquals(asList.last().toList(), b.toList())
         }

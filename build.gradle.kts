@@ -49,20 +49,16 @@ kotlin {
 
     sourceSets {
         val commonMain by getting
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation("com.suparnatural.kotlin:fs:1.1.0")
-            }
-        }
         val androidMain by getting {
             dependencies {
                 rootProject
                 implementation("org.pytorch:pytorch_android_lite:1.13.1")
             }
         }
-        val androidUnitTest by getting {
+        val androidInstrumentedTest by getting {
             dependencies {
+                implementation(kotlin("test"))
+                implementation("com.suparnatural.kotlin:fs:1.1.0")
                 implementation("junit:junit:4.13.2")
                 implementation("androidx.test:core:1.5.0")
                 implementation("androidx.test:rules:1.5.0")
