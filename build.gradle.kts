@@ -61,7 +61,11 @@ kotlin {
         }
         val androidUnitTest by getting {
             dependencies {
-                implementation("junit:junit:4.13")
+                implementation("junit:junit:4.13.2")
+                implementation("androidx.test:core:1.5.0")
+                implementation("androidx.test:rules:1.5.0")
+                implementation("androidx.test:runner:1.5.2")
+                implementation("androidx.test.ext:junit:1.1.5")
             }
         }
         all {
@@ -84,6 +88,7 @@ android {
     defaultConfig {
         minSdkVersion(26)
         targetSdkVersion(31)
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
