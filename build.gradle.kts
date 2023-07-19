@@ -54,7 +54,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 rootProject
-                implementation("org.pytorch:pytorch_android_lite:1.12.1")
+                implementation("org.pytorch:pytorch_android_lite:1.13.1")
             }
         }
         val androidTest by getting {
@@ -83,7 +83,8 @@ tasks.named("linkDebugTestIosX64").configure {
                 "-force_load", libTorchLibsDir.resolve("libtorch_cpu.a").absolutePath,
                 "-all_load",
                 "-L${podBuildDir.resolve("PLMLibTorchWrapper").absolutePath}",
-                "-lPLMLibTorchWrapper"
+                "-lPLMLibTorchWrapper",
+                "-framework", "Accelerate",
             )
         }
     }
