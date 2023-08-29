@@ -1,6 +1,5 @@
 package de.voize.pytorch_lite_multiplatform
 
-import cocoapods.PLMLibTorchWrapper.IValueWrapper
 import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
 actual class TorchModule actual constructor(path: String) {

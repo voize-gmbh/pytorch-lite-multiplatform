@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("multiplatform") version "1.8.0"
-    kotlin("native.cocoapods") version "1.8.0"
+    kotlin("multiplatform") version "1.8.20"
+    kotlin("native.cocoapods") version "1.8.20"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("convention.publication")
@@ -18,11 +18,14 @@ repositories {
 }
 
 kotlin {
+    targetHierarchy.default()
+
     android {
         publishLibraryVariants("release")
     }
 
     ios()
+    iosSimulatorArm64()
 
     cocoapods {
         ios.deploymentTarget = "13.5"
@@ -48,7 +51,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("com.suparnatural.kotlin:fs:1.1.0")
+                implementation("com.squareup.okio:okio:3.3.0")
             }
         }
         val androidMain by getting {

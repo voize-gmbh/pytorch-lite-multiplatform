@@ -1,24 +1,29 @@
 package de.voize.pytorch_lite_multiplatform
 
-import com.suparnatural.core.fs.FileSystem
+import okio.FileSystem
+import okio.Path.Companion.toPath
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
 import kotlin.test.*
 import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
 class TorchModuleIOSTest {
-    private val contentsDir = FileSystem.contentsDirectory.absolutePath
-    private val localModulePath = contentsDir?.byAppending("dummy_module.ptl")?.component!!
+    private val contentsDir = NSFileManager.defaultManager.URLForDirectory(NSDocumentDirectory, NSUserDomainMask, null, false, null)?.path?.toPath() ?: error("Could not find contents directory")
+    private val localModulePath = contentsDir.resolve("dummy_module.ptl")
+    private val absoluteModulePath = FileSystem.SYSTEM.canonicalize(localModulePath).toString()
 
     @Test
     fun itCanLoadRawLibTorchModule() {
         println(localModulePath)
-        val module = LibTorchWrapperTorchModule(fileAtPath = localModulePath)
+        val module = LibTorchWrapperTorchModule(fileAtPath = absoluteModulePath)
         assertNotNull(module)
     }
 
     @Test
     fun itCanRunMethod() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val inputTensor = Tensor.fromBlob(
                 FloatArray(10) { 0.0F },
                 longArrayOf(1, 10),
@@ -37,7 +42,7 @@ class TorchModuleIOSTest {
     @Test
     fun itCanRunForward() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val output = module.forward(
                 IValue.from(
                     Tensor.fromBlob(
@@ -115,7 +120,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIValueStringIdentity() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val a = IValue.from("test")
             val output = module.runMethod("identity_string", a)
             assertEquals("test", output.toStr())
@@ -136,7 +141,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIValueDictionariesIdentity() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.dictLongKeyFrom(
                 mapOf(
                     0L to IValue.from(7L),
@@ -178,7 +183,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIdentityLong() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.from(0L)
             val output = module.runMethod(
                 "identity_long",
@@ -191,7 +196,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIdentityBool() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.from(false)
             val output = module.runMethod(
                 "identity_bool",
@@ -211,7 +216,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIdentityBoolList() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.listFrom(IValue.from(true), IValue.from(false))
             val output = module.runMethod(
                 "identity_bool_list",
@@ -224,7 +229,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIdentityBoolList2() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.listFrom(true, false, scope = this)
             val output = module.runMethod(
                 "identity_bool_list",
@@ -237,7 +242,7 @@ class TorchModuleIOSTest {
     @Test
     fun testIdentityTensor() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val data = floatArrayOf(0.86F, 1.36F, 0.51F, 0.45F, 0.37F, 1.84F)
             val shape = longArrayOf(2, 3)
             val tensor = Tensor.fromBlob(data, shape, this)
@@ -254,7 +259,7 @@ class TorchModuleIOSTest {
     @Test
     fun testSimilarity() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val output = module.runMethod(
                 "similarity",
                 IValue.from(
@@ -283,7 +288,7 @@ class TorchModuleIOSTest {
     @Test
     fun itCanRunMethodWithStringDictInput() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.dictStringKeyFrom(
                 mapOf(
                     "x" to IValue.from(
@@ -305,7 +310,7 @@ class TorchModuleIOSTest {
     @Test
     fun itCanRunMethodWithLongDictInput() {
         plmScoped {
-            val module = TorchModule(localModulePath)
+            val module = TorchModule(absoluteModulePath)
             val input = IValue.dictLongKeyFrom(
                 mapOf(
                     0L to IValue.from(
