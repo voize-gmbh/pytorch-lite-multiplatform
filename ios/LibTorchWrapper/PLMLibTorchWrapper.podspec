@@ -14,7 +14,7 @@ Pod::Spec.new do |spec|
 
     spec.source_files = "LibTorchWrapper/**/*.{h,m,mm}"
 
-    spec.dependency 'LibTorch-Lite', '1.13.0.1'
+    spec.dependency 'LibTorch-Lite', '2.1.0'
     spec.frameworks = 'Accelerate'
 
     spec.xcconfig = {
