@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("multiplatform") version "1.8.0"
-    kotlin("native.cocoapods") version "1.8.0"
+    kotlin("multiplatform") version "1.9.10"
+    kotlin("native.cocoapods") version "1.9.10"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("convention.publication")
@@ -57,10 +57,14 @@ kotlin {
                 implementation("org.pytorch:pytorch_android_lite:2.1.0")
             }
         }
-        val androidTest by getting {
+        val androidInstrumentedTest by getting {
             dependencies {
                 implementation("junit:junit:4.13")
             }
+        }
+
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
     }
 }
@@ -85,6 +89,8 @@ tasks.named("linkDebugTestIosX64").configure {
                 "-L${podBuildDir.resolve("PLMLibTorchWrapper").absolutePath}",
                 "-lPLMLibTorchWrapper",
                 "-framework", "Accelerate",
+                "-framework", "UIKit",
+                "-framework", "Metal",
             )
         }
     }

@@ -10,6 +10,8 @@ Pod::Spec.new do |spec|
     spec.license                  = { :type => 'Apache License, Version 2.0' }
     spec.summary                  = 'Objective-C wrapper for LibTorch-Lite, to be used with pytorch-lite-multiplatform'
 
+    spec.compiler_flags = '-std=c++17'
+
     spec.ios.deployment_target = '13.5'
 
     spec.source_files = "LibTorchWrapper/**/*.{h,m,mm}"
