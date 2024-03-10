@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03E519442B9E0BC5001E68A0 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03E519432B9E0BC5001E68A0 /* Metal.framework */; };
+		03E519462B9E0BF6001E68A0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03E519452B9E0BF6001E68A0 /* UIKit.framework */; };
 		383109D62809C92300E094E4 /* Tensor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 383109D52809C92300E094E4 /* Tensor.mm */; };
 		383109D82809CC2200E094E4 /* Tensor.h in Headers */ = {isa = PBXBuildFile; fileRef = 383109D72809C9CF00E094E4 /* Tensor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3833ABF3286DDCDA00B19C8A /* IValueWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3833ABF2286DDCDA00B19C8A /* IValueWrapper.mm */; };
@@ -33,6 +35,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03E519432B9E0BC5001E68A0 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		03E519452B9E0BF6001E68A0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		301210CF02902776B50A305E /* Pods-LibTorchWrapper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LibTorchWrapper.release.xcconfig"; path = "Target Support Files/Pods-LibTorchWrapper/Pods-LibTorchWrapper.release.xcconfig"; sourceTree = "<group>"; };
 		383109D52809C92300E094E4 /* Tensor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Tensor.mm; sourceTree = "<group>"; };
 		383109D72809C9CF00E094E4 /* Tensor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tensor.h; sourceTree = "<group>"; };
@@ -51,6 +55,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03E519462B9E0BF6001E68A0 /* UIKit.framework in Frameworks */,
+				03E519442B9E0BC5001E68A0 /* Metal.framework in Frameworks */,
 				3847987427FDAB4700E4E801 /* Pods_LibTorchWrapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +108,8 @@
 		9A83B6AD54616E14F630D79D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				03E519452B9E0BF6001E68A0 /* UIKit.framework */,
+				03E519432B9E0BC5001E68A0 /* Metal.framework */,
 				6B89995C3343293DA6F21CC1 /* Pods_LibTorchWrapper.framework */,
 			);
 			name = Frameworks;
@@ -351,6 +359,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -386,6 +395,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;

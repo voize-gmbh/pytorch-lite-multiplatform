@@ -6,6 +6,6 @@ target 'LibTorchWrapper' do
   use_frameworks!
 
   # Pods for LibTorchWrapper
-  pod 'LibTorch-Lite', '1.13.0.1'
+  pod 'LibTorch-Lite', '2.1.0'
   
 end
