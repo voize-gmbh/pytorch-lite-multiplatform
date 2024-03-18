@@ -1,7 +1,12 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, NamedTuple, Tuple
 
 import torch
 import torch.nn as nn
+
+@torch.jit.export
+class State(NamedTuple):
+    a: int
+    b: int
 
 class DummyModel(nn.Module):
     def __init__(self):
@@ -55,6 +60,10 @@ class DummyModel(nn.Module):
 
     @torch.jit.export
     def identity_string(self, x: str):
+        return x
+
+    @torch.jit.export
+    def identity_named_tuple(self, x: State):
         return x
 
     @torch.jit.export

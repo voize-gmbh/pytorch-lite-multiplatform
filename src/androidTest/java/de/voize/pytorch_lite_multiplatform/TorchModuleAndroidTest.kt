@@ -267,6 +267,26 @@ class TorchModuleAndroidTest {
     }
 
     @Test
+    fun testIdentityNamedTuple() {
+        plmScoped {
+            val module = TorchModule(localModulePath)
+
+            val a = IValue.from(1L)
+            val b = IValue.from(2L)
+            val tuple = IValue.tupleFrom(a, b)
+
+            val output = module.runMethod(
+                "identity_named_tuple",
+                tuple,
+            )
+
+            val (outputA, outputB) = output.toTuple()
+            assertEquals(outputA.toLong(), a.toLong())
+            assertEquals(outputB.toLong(), b.toLong())
+        }
+    }
+
+    @Test
     fun testSimilarity() {
         plmScoped {
             val module = TorchModule(localModulePath)
