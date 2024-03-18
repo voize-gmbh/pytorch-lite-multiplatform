@@ -1,17 +1,32 @@
 package de.voize.pytorch_lite_multiplatform
 
+import android.util.Log
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.suparnatural.core.fs.FileSystem
+import org.junit.Test
+import org.junit.runner.RunWith
 import kotlin.test.*
-import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
-class TorchModuleIOSTest {
+@RunWith(AndroidJUnit4::class)
+class TorchModuleAndroidTest {
+    private val assetsManager = InstrumentationRegistry.getInstrumentation().context.assets
+    private val moduleName = "dummy_module.ptl"
+
     private val contentsDir = FileSystem.contentsDirectory.absolutePath
-    private val localModulePath = contentsDir?.byAppending("dummy_module.ptl")?.component!!
+    private val localModulePathComponent = contentsDir?.byAppending(moduleName)!!
+    private val localModulePath = localModulePathComponent.component!!
+
+    init {
+        val inputStream = assetsManager.open(moduleName)
+        val data = inputStream.readBytes()
+        val created = FileSystem.writeFile(localModulePathComponent, data, create = true)
+        inputStream.close()
+    }
 
     @Test
     fun itCanLoadRawLibTorchModule() {
-        println(localModulePath)
-        val module = LibTorchWrapperTorchModule(fileAtPath = localModulePath)
+        val module = TorchModule(localModulePath)
         assertNotNull(module)
     }
 
