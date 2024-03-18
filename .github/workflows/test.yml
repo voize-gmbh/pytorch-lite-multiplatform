@@ -20,7 +20,7 @@ jobs:
       - run: xcrun simctl list devices iOS
       - run: python3 --version
       - run: pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
-      - run: ./gradlew
+      - run: ./gradlew iosSimulatorX64Test
   test-android-instrumented:
     runs-on: macos-latest
     steps:
