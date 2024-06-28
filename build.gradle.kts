@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "de.voize"
-version = "0.6.0"
+version = "0.7.0"
 
 repositories {
     google()
@@ -40,7 +40,7 @@ kotlin {
         }
 
         pod("PLMLibTorchWrapper") {
-            version = "0.6.0"
+            version = "0.7.0"
             headers = "LibTorchWrapper.h"
             source = path(project.file("ios/LibTorchWrapper"))
         }
