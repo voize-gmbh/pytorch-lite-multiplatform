@@ -11,12 +11,9 @@ Pod::Spec.new do |spec|
 
     spec.source_files = "ios/LibTorchWrapper/LibTorchWrapper/**/*.{h,m,mm}"
 
-    spec.dependency 'LibTorch-Lite', '1.13.0.1'
+    spec.dependency 'VoizeLibTorch-Lite', '2.1.0'
     spec.frameworks = 'Accelerate'
 
-    spec.xcconfig = {
-        'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/LibTorch-Lite/install/include/"',
-        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-    }
+    spec.compiler_flags = '-std=c++17'
 
 end
