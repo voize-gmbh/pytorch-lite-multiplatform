@@ -39,3 +39,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - run: ./gradlew build -x iosX64Test
+  build-libtorch-wrapper:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ios/LibTorchWrapper
+    steps:
+      - uses: actions/checkout@v3
+      - run: pod install
+      - run: xcodebuild -workspace LibTorchWrapper.xcworkspace -scheme LibTorchWrapper -configuration Debug -sdk iphoneos -destination generic/platform=iOS
