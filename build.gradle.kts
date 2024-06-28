@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("multiplatform") version "1.8.0"
-    kotlin("native.cocoapods") version "1.8.0"
+    kotlin("multiplatform") version "1.9.10"
+    kotlin("native.cocoapods") version "1.9.10"
     id("com.android.library")
     id("com.adarshr.test-logger") version "3.1.0"
     id("convention.publication")
@@ -18,7 +18,11 @@ repositories {
 }
 
 kotlin {
-    android {
+    jvmToolchain(17)
+
+    targetHierarchy.default()
+
+    androidTarget {
         publishLibraryVariants("release")
     }
 
@@ -57,10 +61,13 @@ kotlin {
                 implementation("org.pytorch:pytorch_android_lite:1.13.1")
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
                 implementation("junit:junit:4.13")
             }
+        }
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
     }
 }
@@ -98,6 +105,8 @@ task("iosSimulatorX64Test") {
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Runs iOS tests on a simulator"
 
+    val deviceName = "iPhone 15 Pro"
+
     doLast {
         println("Retrieving runtime for iOS simulator")
         val iOSRuntimesOutput = ByteArrayOutputStream()
@@ -119,7 +128,6 @@ task("iosSimulatorX64Test") {
         }
         val devicesData = groovy.json.JsonSlurper().parseText(devicesOutput.toString()) as Map<String, Map<String, List<Map<String, String>>>>
         val devices = devicesData["devices"]!!
-        val deviceName = "iPhone 12"
         val device = devices[latestRuntimeIdentifier]!!.find { it["name"] == deviceName }
         val udid = device!!["udid"]
         println("Using device: $deviceName ($udid)")
@@ -150,12 +158,15 @@ task("iosSimulatorX64Test") {
 }
 
 android {
-    compileSdkVersion(30)
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    namespace = "de.voize.pytorch_lite_multiplatform"
+
+    compileSdkVersion(31)
+
     defaultConfig {
         minSdkVersion(24)
-        targetSdkVersion(30)
+        targetSdkVersion(31)
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -163,9 +174,5 @@ android {
         getByName("debug") {
             isMinifyEnabled = false
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
