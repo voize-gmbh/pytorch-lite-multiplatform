@@ -41,19 +41,25 @@ tasks {
     val deleteDokkaOutputDir by registering(Delete::class) {
         delete(dokkaOutputDir)
     }
-
-    register<Jar>("javadocJar") {
-        dependsOn(deleteDokkaOutputDir, dokkaHtml)
-        archiveClassifier.set("javadoc")
-        from(dokkaOutputDir)
-    }
 }
 
 publishing {
     // Configure all publications
     publications.withType<MavenPublication> {
 
-        artifact(tasks.named<Jar>("javadocJar").get())
+        val publication = this
+        val dokkaJar = tasks.register<Jar>("${publication.name}DokkaJar") {
+            group = JavaBasePlugin.DOCUMENTATION_GROUP
+            description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
+            archiveClassifier.set("javadoc")
+            from(tasks.named("dokkaHtml"))
+            // Each archive name should be distinct, to avoid implicit dependency issues.
+            // We use the same format as the sources Jar tasks.
+            // https://youtrack.jetbrains.com/issue/KT-46466
+            archiveBaseName.set("${archiveBaseName.get()}-${publication.name}")
+        }
+
+        artifact(dokkaJar)
 
         // Provide artifacts information requited by Maven Central
         pom {
