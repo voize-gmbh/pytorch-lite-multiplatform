@@ -5,7 +5,7 @@
 ![Cocoapods](https://img.shields.io/cocoapods/v/PLMLibTorchWrapper)
 
 A Kotlin multi-platform wrapper around the PyTorch Lite libraries on [Android](https://pytorch.org/mobile/android/) and [iOS](https://pytorch.org/mobile/ios/).
-You can use this library in your Kotlin multi-platform project to write mobile inference code for PyTorch Lite models. The API is very close to the Android API of PyTorch Lite.
+You can use this library in your Kotlin multi-platform project to write mobile inference code for PyTorch Lite models. The API is very close to the Android API of PyTorch Lite. A high level introduction is available [in our blog post](https://tech.voize.de/posts/pytorch-lite-multiplatform).
 
 ## Installation
 
