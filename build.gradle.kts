@@ -9,9 +9,6 @@ plugins {
     id("convention.publication")
 }
 
-group = "de.voize"
-version = "0.7.0"
-
 repositories {
     google()
     mavenCentral()
