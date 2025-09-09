@@ -1,6 +1,6 @@
 package de.voize.pytorch_lite_multiplatform
 
-import org.pytorch.LiteModuleLoader
+import de.voize.pytorch.LiteModuleLoader
 
 actual class TorchModule actual constructor(path: String) {
     private val module = LiteModuleLoader.load(path)

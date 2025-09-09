@@ -1,6 +1,6 @@
 package de.voize.pytorch_lite_multiplatform
 
-import org.pytorch.IValue as NativeIValue
+import de.voize.pytorch.IValue as NativeIValue
 
 actual class IValue internal constructor(internal val nativeIValue: NativeIValue) {
     actual fun isNull() = nativeIValue.isNull
