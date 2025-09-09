@@ -74,8 +74,7 @@ jobs:
           api-level: 30
           target: google_apis
           arch: x86_64
-          script: ./gradlew connectedCheck 
-      - run: ./gradlew connectedAndroidTest
+          script: ./gradlew connectedCheck
   build:
     runs-on: macos-14
     steps:
