@@ -1,7 +1,7 @@
 package de.voize.pytorch_lite_multiplatform
 
-import org.pytorch.MemoryFormat
-import org.pytorch.Tensor as NativeTensor
+import de.voize.pytorch.MemoryFormat
+import de.voize.pytorch.Tensor as NativeTensor
 
 actual class Tensor internal constructor(internal val nativeTensor: NativeTensor) {
     actual fun getDataAsIntArray() = nativeTensor.dataAsIntArray

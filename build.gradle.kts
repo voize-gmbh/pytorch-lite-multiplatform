@@ -22,7 +22,7 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
-    
+
     ios()
     iosSimulatorArm64()
 
@@ -56,7 +56,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 rootProject
-                implementation("org.pytorch:pytorch_android_lite:2.1.0")
+                implementation("de.voize.pytorch:pytorch_android_lite:2.8.2")
             }
         }
         val androidUnitTest by getting {
@@ -82,7 +82,7 @@ android {
     compileSdkVersion(31)
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdkVersion(26)
         targetSdkVersion(31)
     }
 
