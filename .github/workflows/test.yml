@@ -64,7 +64,7 @@ jobs:
         with:
           python-version: '3.9'
       - run: python3 --version
-      - run: pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
+      - run: pip3 install torch==2.8.0 --extra-index-url https://download.pytorch.org/whl/cpu
       - run: python3 build_dummy_model.py
       - run: mkdir -p src/androidInstrumentedTest/assets
       - run: mv dummy_module.ptl src/androidInstrumentedTest/assets/
