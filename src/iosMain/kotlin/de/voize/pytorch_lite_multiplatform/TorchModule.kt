@@ -2,8 +2,8 @@ package de.voize.pytorch_lite_multiplatform
 
 import cocoapods.PLMLibTorchWrapper.TorchModule as LibTorchWrapperTorchModule
 
-actual class TorchModule actual constructor(path: String) {
-    private val module = LibTorchWrapperTorchModule(fileAtPath = path)
+actual class TorchModule actual constructor(path: String, useMmap: Boolean) {
+    private val module = LibTorchWrapperTorchModule(fileAtPath = path, useMmap = useMmap)
 
     actual fun runMethod(
         methodName: String,
