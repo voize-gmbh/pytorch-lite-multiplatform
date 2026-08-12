@@ -2,7 +2,9 @@ package de.voize.pytorch_lite_multiplatform
 
 import de.voize.pytorch.LiteModuleLoader
 
-actual class TorchModule actual constructor(path: String) {
+// useMmap is accepted but ignored: LiteModuleLoader does not expose the load
+// options needed to reach the mmap path, so Android always copies the weights.
+actual class TorchModule actual constructor(path: String, useMmap: Boolean) {
     private val module = LiteModuleLoader.load(path)
 
     actual fun runMethod(methodName: String, vararg inputs: IValue): IValue {
